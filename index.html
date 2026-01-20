@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neslinur Kalkan - Electronics & Math Engineering</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <link href='https://fonts.googleapis.com/css?family=Fauna+One' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <style>
@@ -877,9 +879,10 @@
     </section>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mapbox-polyline/1.1.1/polyline.min.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
 <script>
-    // --- AYARLAR ---
+    // --- AYARLAR (BURAYI DOLDUR) ---
     const stravaConfig = {
         clientId: '197029', 
         clientSecret: '1fd68c2e2b4e0f1a9b1536c0ccd20487b7413152',     
@@ -891,6 +894,10 @@
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
+
+    // --- KÜMELEME (CLUSTER) GRUBU OLUŞTUR ---
+    // İşte o "115" yazan yuvarlakları bu satır yapıyor
+    const markers = L.markerClusterGroup();
 
     // --- YARDIMCI FONKSİYONLAR ---
     async function getAccessToken() {
@@ -918,7 +925,7 @@
         document.getElementById('totalActivities').innerText = totalCount;
     }
 
-    // --- ANA FONKSİYON (DÖNGÜLÜ) ---
+    // --- ANA FONKSİYON (TÜM VERİLERİ ÇEK) ---
     async function loadAllStravaData() {
         const token = await getAccessToken();
         if (!token) return;
@@ -927,20 +934,19 @@
         let allActivities = [];
         let keepFetching = true;
         
-        // Güvenlik limiti: En fazla 3 sayfa çek (Yaklaşık 600 aktivite)
-        // Site yavaşlamasın diye sınırlıyoruz. Sayıyı artırabilirsin.
-        const maxPages = 3; 
+        // Güvenlik limiti: En fazla 5 sayfa çek (Yaklaşık 1000 aktivite)
+        const maxPages = 5; 
 
         while (keepFetching && page <= maxPages) {
             try {
-                // Sayfa sayfa veri çekiyoruz (Her sayfada 200 aktivite)
+                // Sayfa sayfa veri çek (Her sayfada 200 aktivite)
                 const response = await fetch(`https://www.strava.com/api/v3/athlete/activities?per_page=200&page=${page}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const activities = await response.json();
 
                 if (activities.length === 0) {
-                    keepFetching = false; // Veri bitti
+                    keepFetching = false;
                 } else {
                     allActivities = allActivities.concat(activities);
                     page++;
@@ -953,41 +959,47 @@
 
         console.log(`Toplam ${allActivities.length} aktivite çekildi.`);
         
-        // Haritaya Çizdirme İşlemi
         let totalDistance = 0;
         let bounds = [];
 
         allActivities.forEach(activity => {
             totalDistance += activity.distance;
 
-            // Harita verisi (summary_polyline) var mı kontrol et
             if (activity.map && activity.map.summary_polyline) {
                 try {
                     const coordinates = polyline.decode(activity.map.summary_polyline);
                     
                     if (coordinates.length > 0) {
-                        // ROTAYI ÇİZ (Çizgi)
+                        // 1. ROTAYI ÇİZ (Çizgi haritaya direkt eklenir)
                         L.polyline(coordinates, {
-                            color: '#fc4c02', // Strava Turuncusu
-                            weight: 4,        // Çizgi kalınlığı
-                            opacity: 0.8      // Görünürlük
+                            color: '#fc4c02', // Turuncu çizgi
+                            weight: 3,        
+                            opacity: 0.6      
                         }).addTo(map);
 
-                        // Sadece başlangıça nokta koy (İstersen bunu silebilirsin)
-                        // L.marker(coordinates[0]).addTo(map).bindPopup(activity.name);
+                        // 2. PIN'I KÜMELEME GRUBUNA EKLE (Haritaya değil, 'markers' grubuna)
+                        const marker = L.marker(coordinates[0]).bindPopup(`
+                            <b>${activity.name}</b><br>
+                            🏁 ${(activity.distance / 1000).toFixed(2)} km<br>
+                            📅 ${new Date(activity.start_date).toLocaleDateString()}
+                        `);
+                        markers.addLayer(marker); // <-- Püf noktası burası!
                         
                         bounds.push(coordinates);
                     }
                 } catch (e) {
-                    // Poligon çözülemezse pas geç
+                    // Hata olursa geç
                 }
             }
         });
 
-        // İstatistikleri Güncelle
+        // 3. EN SONDA KÜMEYİ HARİTAYA BAS
+        map.addLayer(markers);
+
+        // İstatistikleri güncelle
         updateStatsUI(totalDistance, allActivities.length);
 
-        // Haritayı tüm rotaları kapsayacak şekilde ayarla
+        // Haritayı ortala
         if (bounds.length > 0) {
             const allPoints = bounds.flat();
             map.fitBounds(allPoints);
@@ -997,7 +1009,7 @@
     // Başlat
     loadAllStravaData();
 
-    // --- NAVİGASYON KODLARI ---
+    // Navigasyon Kodları (Aynen Kalabilir)
     document.querySelectorAll('nav a').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
