@@ -795,8 +795,6 @@
             </div>
 
             <div style="text-align: center;">
-                <button class="strava-connect-btn" id="stravaConnect">Connect with Strava</button>
-                <div class="strava-status" id="stravaStatus" style="display: none;"></div>
             </div>
 
             <div id="map"></div>
@@ -877,73 +875,134 @@
             </div>
         </div>
     </section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mapbox-polyline/1.1.1/polyline.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
-    <script>
-        // Strava API Configuration
-        const STRAVA_CLIENT_ID = '197029';
-        const STRAVA_CLIENT_SECRET = '1fd68c2e2b4e0f1a9b1536c0ccd20487b7413152'; // Replace with your actual secret
-        const REDIRECT_URI = 'https://neslinurkalkan.com';
+<script>
+    // --- AYARLAR (BURAYI DOLDUR) ---
+    const stravaConfig = {
+        clientId: '197029', 
+        clientSecret: '1fd68c2e2b4e0f1a9b1536c0ccd20487b7413152',     // Strava panelindeki Secret
+        refreshToken: 'aab8b9fd1ee0d6c280b07f51010ecfcfa24d89b2'      // Az önce bulduğun uzun kod
+    };
 
-        // Smooth scroll navigation
-        document.querySelectorAll('nav a').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                target.scrollIntoView({ behavior: 'smooth' });
+    // --- 1. Haritayı Oluştur ---
+    // Başlangıçta İstanbul'a odaklıyoruz
+    const map = L.map('map').setView([41.0082, 28.9784], 10);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // --- 2. Yardımcı Fonksiyonlar ---
+
+    // Strava'dan yeni bir "Giriş Bileti" (Access Token) al
+    async function getAccessToken() {
+        try {
+            const response = await fetch('https://www.strava.com/oauth/token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    client_id: stravaConfig.clientId,
+                    client_secret: stravaConfig.clientSecret,
+                    refresh_token: stravaConfig.refreshToken,
+                    grant_type: 'refresh_token'
+                })
             });
-        });
+            const data = await response.json();
+            return data.access_token;
+        } catch (error) {
+            console.error("Token hatası:", error);
+            return null;
+        }
+    }
 
-        // Fixed navigation on scroll
-        const nav = document.querySelector('nav');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 100) {
-                nav.classList.add('fixed');
-            } else {
-                nav.classList.remove('fixed');
+    // İstatistik kutularını güncelle
+    function updateStatsUI(totalDist, totalCount) {
+        // Mesafeyi km'ye çevir ve yuvarla
+        const distKm = Math.floor(totalDist / 1000); 
+        document.getElementById('totalDistance').innerText = distKm;
+        document.getElementById('totalActivities').innerText = totalCount;
+    }
+
+    // --- 3. Ana Fonksiyon: Verileri Çek ve Çiz ---
+    async function loadStravaData() {
+        const token = await getAccessToken();
+        if (!token) return;
+
+        // Son 50 aktiviteyi çekiyoruz
+        const url = 'https://www.strava.com/api/v3/athlete/activities?per_page=50';
+        
+        try {
+            const response = await fetch(url, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const activities = await response.json();
+
+            let totalDistance = 0;
+            let bounds = []; // Haritayı ortalamak için sınırları tutacağız
+
+            activities.forEach(activity => {
+                // Toplam mesafeyi hesapla
+                totalDistance += activity.distance;
+
+                // Eğer aktivitenin haritası varsa çiz
+                if (activity.map && activity.map.summary_polyline) {
+                    // Strava'nın şifreli rotasını çöz (decode)
+                    const coordinates = polyline.decode(activity.map.summary_polyline);
+                    
+                    if (coordinates.length > 0) {
+                        // Rotayı Haritaya Ekle (Turuncu Çizgi)
+                        L.polyline(coordinates, {
+                            color: '#fc4c02', // Strava Turuncusu
+                            weight: 3,
+                            opacity: 0.7
+                        }).addTo(map);
+
+                        // Başlangıç noktasına tıklandığında bilgi ver
+                        L.marker(coordinates[0]).addTo(map)
+                            .bindPopup(`
+                                <b>${activity.name}</b><br>
+                                📅 ${new Date(activity.start_date).toLocaleDateString()}<br>
+                                🏁 ${(activity.distance / 1000).toFixed(2)} km
+                            `);
+                        
+                        // Bu rotayı sınırlara ekle
+                        bounds.push(coordinates);
+                    }
+                }
+            });
+
+            // İstatistik kartlarını doldur
+            updateStatsUI(totalDistance, activities.length);
+
+            // Haritayı tüm koşuları kapsayacak şekilde uzaklaştır/yakınlaştır
+            if (bounds.length > 0) {
+                // Leaflet tüm noktaları içeren bir kutu hesaplar
+                const allPoints = bounds.flat(); 
+                map.fitBounds(allPoints);
             }
-        });
 
-        // Initialize map
-        const map = L.map('map').setView([41.1053, 29.0121], 3);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
-
-        // Sample locations
-        const sampleLocations = [
-            { name: 'Istanbul, Turkey', coords: [41.0082, 28.9784] },
-            { name: 'Porto, Portugal (JWOC 2022)', coords: [41.1579, -8.6291] },
-            { name: 'Ankara, Turkey', coords: [39.9334, 32.8597] }
-        ];
-
-        sampleLocations.forEach(loc => {
-            L.marker(loc.coords).addTo(map)
-                .bindPopup(`<b>${loc.name}</b>`);
-        });
-
-        // Strava OAuth
-        document.getElementById('stravaConnect').addEventListener('click', function() {
-            const authUrl = `https://www.strava.com/oauth/authorize?client_id=${STRAVA_CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}&approval_prompt=force&scope=activity:read_all`;
-            window.location.href = authUrl;
-        });
-
-        // Check for OAuth callback
-        const urlParams = new URLSearchParams(window.location.search);
-        const authCode = urlParams.get('code');
-
-        if (authCode) {
-            exchangeToken(authCode);
+        } catch (error) {
+            console.error("Veri çekme hatası:", error);
         }
+    }
 
-        // Check if already authenticated
-        const accessToken = localStorage.getItem('strava_access_token');
-        if (accessToken) {
-            loadStravaActivities(accessToken);
-        }
+    // Sayfa yüklendiğinde çalıştır
+    loadStravaData();
 
-        async function exchangeToken(code) {
-            try {
-                const response = await fetch('https://www.strava.com/oauth/token', {
-                    method: 
+    // --- 4. Sayfa İçi Navigasyon (Menu) ---
+    document.querySelectorAll('nav a').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            target.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 100) nav.classList.add('fixed');
+        else nav.classList.remove('fixed');
+    });
+</script>
