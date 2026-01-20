@@ -162,12 +162,12 @@
             border-color: #0077b5;
         }
 
-        .github {
-            border-color: #333;
-        }
-
         .email {
             border-color: #ea4335;
+        }
+
+        .strava {
+            border-color: #fc4c02;
         }
 
         .linkedin:hover {
@@ -175,13 +175,13 @@
             transition: background-color .4s;
         }
 
-        .github:hover {
-            background-color: #333;
+        .email:hover {
+            background-color: #ea4335;
             transition: background-color .4s;
         }
 
-        .email:hover {
-            background-color: #ea4335;
+        .:hover {
+            background-color: #fc4c02;
             transition: background-color .4s;
         }
 
@@ -376,16 +376,17 @@
 
         /* SPORTS SECTION */
         #sports {
-            background-color: #f4f4f4;
+            background-color: #423a3a;
             padding: 80px 0;
+            color: white;
         }
 
         #sports h2 {
-            color: #0d2435;
+            color: #F0F0F0;
         }
 
         #sports h2::after {
-            border-bottom: 2px dashed #918D8D;
+            border-bottom: 2px dashed #b4b4b4;
         }
 
         #map {
@@ -393,7 +394,7 @@
             width: 100%;
             margin-top: 40px;
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
         .stats-grid {
@@ -404,21 +405,22 @@
         }
 
         .stat-card {
-            background-color: white;
+            background-color: #3D3636;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             text-align: center;
+            border: 2px solid #114190;
         }
 
         .stat-card h3 {
-            color: #114190;
+            color: #fc4c02;
             font-size: 250%;
             margin-bottom: 10px;
         }
 
         .stat-card p {
-            color: #666;
+            color: #F0F0F0;
         }
 
         .achievements {
@@ -426,11 +428,43 @@
         }
 
         .achievement-item {
-            background-color: white;
+            background-color: #3D3636;
             padding: 20px;
             margin-bottom: 15px;
-            border-left: 5px solid #e11a61;
+            border-left: 5px solid #fc4c02;
             border-radius: 5px;
+        }
+
+        .achievement-item h4 {
+            color: #F0F0F0;
+        }
+
+        .achievement-item p {
+            color: #b4b4b4;
+        }
+
+        .strava-connect-btn {
+            background-color: #fc4c02;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-family: 'Fauna One', serif;
+        }
+
+        .strava-connect-btn:hover {
+            background-color: #e04402;
+        }
+
+        .strava-status {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #3D3636;
+            border-radius: 5px;
+            color: #F0F0F0;
         }
 
         /* CONTACT SECTION */
@@ -683,6 +717,63 @@
         </div>
     </section>
 
+    <!-- CERTIFICATIONS -->
+    <section id="certifications">
+        <div class="container">
+            <h2>certifications & achievements...</h2>
+
+            <div class="cert-grid">
+                <div class="cert-item">
+                    <h4>🎓 Morehead-Cain Global Scholars Fellowship</h4>
+                    <p class="cert-org">Finalist</p>
+                    <p class="cert-desc">Recognized for leadership, scholarship, character, and physical vigor</p>
+                </div>
+
+                <div class="cert-item">
+                    <h4>🤖 Artificial Intelligence Expertise Program</h4>
+                    <p class="cert-org">TUBITAK, Arçelik, Baykar, Cezeri</p>
+                    <p class="cert-desc">Specialized training in AI innovation and applications (2024)</p>
+                </div>
+
+                <div class="cert-item">
+                    <h4>📊 Supervised Machine Learning: Regression and Classification</h4>
+                    <p class="cert-org">Coursera</p>
+                    <p class="cert-desc">Nov 2025</p>
+                </div>
+
+                <div class="cert-item">
+                    <h4>🎮 Control Design Onramp with Simulink</h4>
+                    <p class="cert-org">MathWorks</p>
+                    <p class="cert-desc">Jan 2024</p>
+                </div>
+
+                <div class="cert-item">
+                    <h4>📈 Simulink Onramp</h4>
+                    <p class="cert-org">MathWorks</p>
+                    <p class="cert-desc">Nov 2023</p>
+                </div>
+
+                <div class="cert-item">
+                    <h4>🏃‍♀️ Licensed Athlete</h4>
+                    <p class="cert-org">Istanbul Orienteering Sports Club</p>
+                    <p class="cert-desc">National level competitor (2021)</p>
+                </div>
+
+                <div class="cert-item">
+                    <h4>🧭 Level 1 Orienteering Coach</h4>
+                    <p class="cert-org">Turkish Orienteering Federation</p>
+                    <p class="cert-desc">Certified orienteering instructor</p>
+                </div>
+
+                <div class="cert-item">
+                    <h4>🚀 CAMPus Engineering Program</h4>
+                    <p class="cert-org">ROKETSAN</p>
+                    <p class="cert-desc">Learning and Development Camp for Engineers</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- SPORTS -->
     <section id="sports">
         <div class="container">
@@ -690,17 +781,22 @@
 
             <div class="stats-grid">
                 <div class="stat-card">
-                    <h3>500+</h3>
+                    <h3 id="totalDistance">-</h3>
                     <p>Total Distance (km)</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalActivities">-</h3>
+                    <p>Total Activities</p>
                 </div>
                 <div class="stat-card">
                     <h3>5+</h3>
                     <p>Variety of Sports</p>
                 </div>
-                <div class="stat-card">
-                    <h3>50+</h3>
-                    <p>Competitions</p>
-                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="strava-connect-btn" id="stravaConnect">Connect with Strava</button>
+                <div class="strava-status" id="stravaStatus" style="display: none;"></div>
             </div>
 
             <div id="map"></div>
@@ -746,12 +842,6 @@
                     </div>
                 </div>
             </div>
-
-            <p style="margin-top: 40px; color: #666;">
-                <strong>📍 Visualize Your Routes:</strong><br>
-                <input type="file" id="gpxUpload" accept=".gpx,.geojson" style="margin-top: 10px; padding: 10px; background: white; border: 2px solid #114190; border-radius: 5px;">
-                <button onclick="loadGPXFile()" style="margin-left: 10px; padding: 10px 20px; background: #114190; color: white; border: none; border-radius: 5px; cursor: pointer;">Upload & Display Route</button>
-            </p>
         </div>
     </section>
 
@@ -789,8 +879,12 @@
     </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
     <script>
+        // Strava API Configuration
+        const STRAVA_CLIENT_ID = '197029';
+        const STRAVA_CLIENT_SECRET = '1fd68c2e2b4e0f1a9b1536c0ccd20487b7413152'; // Replace with your actual secret
+        const REDIRECT_URI = 'https://neslinurkalkan.com';
+
         // Smooth scroll navigation
         document.querySelectorAll('nav a').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -817,7 +911,7 @@
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        // Sample locations - Replace with your actual Strava data
+        // Sample locations
         const sampleLocations = [
             { name: 'Istanbul, Turkey', coords: [41.0082, 28.9784] },
             { name: 'Porto, Portugal (JWOC 2022)', coords: [41.1579, -8.6291] },
@@ -829,13 +923,27 @@
                 .bindPopup(`<b>${loc.name}</b>`);
         });
 
-        // Form submission handler
-        document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Form submitted! (This is a demo - connect to your backend)');
+        // Strava OAuth
+        document.getElementById('stravaConnect').addEventListener('click', function() {
+            const authUrl = `https://www.strava.com/oauth/authorize?client_id=${STRAVA_CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}&approval_prompt=force&scope=activity:read_all`;
+            window.location.href = authUrl;
         });
 
-        // Strava API integration will be added here later
-    </script>
-</body>
-</html>
+        // Check for OAuth callback
+        const urlParams = new URLSearchParams(window.location.search);
+        const authCode = urlParams.get('code');
+
+        if (authCode) {
+            exchangeToken(authCode);
+        }
+
+        // Check if already authenticated
+        const accessToken = localStorage.getItem('strava_access_token');
+        if (accessToken) {
+            loadStravaActivities(accessToken);
+        }
+
+        async function exchangeToken(code) {
+            try {
+                const response = await fetch('https://www.strava.com/oauth/token', {
+                    method: 
