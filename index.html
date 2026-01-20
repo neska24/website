@@ -925,68 +925,65 @@
         document.getElementById('totalActivities').innerText = totalCount;
     }
 
-    // --- 3. Ana Fonksiyon: Verileri Çek ve Çiz ---
-    async function loadStravaData() {
-        const token = await getAccessToken();
-        if (!token) return;
+// ... önceki kısımlar aynı ...
 
-        // Son 50 aktiviteyi çekiyoruz
-        const url = 'https://www.strava.com/api/v3/athlete/activities?per_page=50';
-        
-        try {
-            const response = await fetch(url, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const activities = await response.json();
+async function loadStravaData() {
+    const token = await getAccessToken();
+    
+    // CASUS 1: Token'ı alabildik mi?
+    console.log("Alınan Token:", token); 
 
-            let totalDistance = 0;
-            let bounds = []; // Haritayı ortalamak için sınırları tutacağız
-
-            activities.forEach(activity => {
-                // Toplam mesafeyi hesapla
-                totalDistance += activity.distance;
-
-                // Eğer aktivitenin haritası varsa çiz
-                if (activity.map && activity.map.summary_polyline) {
-                    // Strava'nın şifreli rotasını çöz (decode)
-                    const coordinates = polyline.decode(activity.map.summary_polyline);
-                    
-                    if (coordinates.length > 0) {
-                        // Rotayı Haritaya Ekle (Turuncu Çizgi)
-                        L.polyline(coordinates, {
-                            color: '#fc4c02', // Strava Turuncusu
-                            weight: 3,
-                            opacity: 0.7
-                        }).addTo(map);
-
-                        // Başlangıç noktasına tıklandığında bilgi ver
-                        L.marker(coordinates[0]).addTo(map)
-                            .bindPopup(`
-                                <b>${activity.name}</b><br>
-                                📅 ${new Date(activity.start_date).toLocaleDateString()}<br>
-                                🏁 ${(activity.distance / 1000).toFixed(2)} km
-                            `);
-                        
-                        // Bu rotayı sınırlara ekle
-                        bounds.push(coordinates);
-                    }
-                }
-            });
-
-            // İstatistik kartlarını doldur
-            updateStatsUI(totalDistance, activities.length);
-
-            // Haritayı tüm koşuları kapsayacak şekilde uzaklaştır/yakınlaştır
-            if (bounds.length > 0) {
-                // Leaflet tüm noktaları içeren bir kutu hesaplar
-                const allPoints = bounds.flat(); 
-                map.fitBounds(allPoints);
-            }
-
-        } catch (error) {
-            console.error("Veri çekme hatası:", error);
-        }
+    if (!token) {
+        console.error("Token alınamadı, durduruluyor.");
+        return;
     }
+
+    const url = 'https://www.strava.com/api/v3/athlete/activities?per_page=50';
+    
+    try {
+        const response = await fetch(url, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const activities = await response.json();
+
+        // CASUS 2: Strava bize ne cevap verdi?
+        console.log("Strava Cevabı:", activities); 
+
+        // Eğer cevap bir liste (Array) değilse hata fırlat
+        if (!Array.isArray(activities)) {
+            console.error("Strava bir liste göndermedi! Gelen cevap yukarıda.");
+            return; // Fonksiyonu burada kes
+        }
+
+        // Buradan sonrası eski kodun aynısı...
+        let totalDistance = 0;
+        let bounds = []; 
+
+        activities.forEach(activity => {
+             // ... buralar aynı kalsın ...
+             // (Mevcut kodundaki forEach döngüsü içeriği)
+             totalDistance += activity.distance;
+             if (activity.map && activity.map.summary_polyline) {
+                 const coordinates = polyline.decode(activity.map.summary_polyline);
+                 if (coordinates.length > 0) {
+                     L.polyline(coordinates, { color: '#fc4c02', weight: 3, opacity: 0.7 }).addTo(map);
+                     L.marker(coordinates[0]).addTo(map).bindPopup(activity.name);
+                     bounds.push(coordinates);
+                 }
+             }
+        });
+        
+        updateStatsUI(totalDistance, activities.length);
+        if (bounds.length > 0) {
+            const allPoints = bounds.flat(); 
+            map.fitBounds(allPoints);
+        }
+
+    } catch (error) {
+        console.error("Büyük Hata:", error);
+    }
+}
 
     // Sayfa yüklendiğinde çalıştır
     loadStravaData();
