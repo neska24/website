@@ -35,23 +35,114 @@
             background: url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600") no-repeat;
             width: 100%; background-size: cover; background-position: center; min-height: 100vh;
         }
+        /* --- YENİ MOBİL UYUMLU NAVİGASYON --- */
+#home nav {
+    width: 100%;
+    padding-top: 20px;
+    z-index: 999;
+    transition: all 0.3s ease;
+}
 
-        /* Navigasyon - Tam Ekran ve Güvenli */
-        #home nav { width: 100%; max-width: 100%; padding-top: 40px; z-index: 999; }
-        
-        #home nav.fixed {
-            position: fixed; top: 0; left: 0; width: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
-            padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: background-color .8s;
-        }
+#home nav.fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.95);
+    padding: 10px 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
 
-        #home nav ul {
-            max-width: 1200px; margin: 0 auto; display: flex; justify-content: center;
-        }
-        #home nav ul li { flex: 1; text-align: center; }
-        #home nav a { padding: 16px 30px; display: block; transition: background-color 0.3s; }
-        #home nav a:hover { background-color: rgba(255,255,255,0.1); }
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center; /* Masaüstünde ortala */
+    align-items: center;
+    position: relative;
+}
+
+.nav-links {
+    display: flex;
+    gap: 15px;
+}
+
+.nav-links li { list-style: none; }
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    display: block;
+    transition: 0.3s;
+    font-size: 18px;
+    border-radius: 5px;
+}
+
+.nav-links a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fc4c02; /* Logondaki turuncu detay */
+}
+
+/* Hamburger Menü İkonu (Masaüstünde Gizli) */
+.hamburger {
+    display: none;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
+    position: absolute; /* Mobilde sağa sabitlemek için */
+    right: 20px;
+    top: 0;
+}
+
+.hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    transition: 0.3s;
+}
+
+/* --- MOBİL AYARLARI (768px ve altı) --- */
+@media screen and (max-width: 768px) {
+    #home nav { padding: 15px 0; position: fixed; top: 0; background-color: rgba(0,0,0,0.95); }
+    
+    .nav-container {
+        justify-content: flex-end; /* İçeriği sağa yasla */
+        padding: 0 20px;
+    }
+
+    .hamburger { 
+        display: flex; 
+        position: relative; /* Mobilde akışa girsin */
+        right: 0;
+    } 
+
+    .nav-links {
+        display: none; /* Mobilde menüyü başta gizle */
+        flex-direction: column;
+        position: absolute;
+        top: 60px; /* Üst bardan sonra başlasın */
+        left: 0;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.98);
+        text-align: center;
+        padding: 20px 0;
+        border-top: 1px solid #333;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+    
+    .nav-links a {
+        padding: 20px;
+        font-size: 22px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+}
+
+
 
         .social-links { margin-top: 100px; display: flex; justify-content: center; gap: 10px; }
         .linkedin:hover { background-color: #0077b5; transition: background-color .4s; }
@@ -146,15 +237,24 @@
     <section id="home">
         <div class="overlay">
             <nav role="navigation">
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#experience">Experience</a></li>
-                    <li><a href="#certifications">Certifications</a></li>
-                    <li><a href="#sports">Sports</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
+    <div class="nav-container">
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <ul class="nav-links">
+            <li><a href="#home" onclick="toggleMenu()">Home</a></li>
+            <li><a href="#about" onclick="toggleMenu()">About</a></li>
+            <li><a href="#experience" onclick="toggleMenu()">Experience</a></li>
+            <li><a href="#certifications" onclick="toggleMenu()">Certifications</a></li>
+            <li><a href="#sports" onclick="toggleMenu()">Sports</a></li>
+            <li><a href="#contact" onclick="toggleMenu()">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
             <div class="container">
                 <h1>
                     <span class="logo">Neslinur Kalkan</span>
@@ -466,6 +566,11 @@
             if (window.scrollY > 100) nav.classList.add('fixed');
             else nav.classList.remove('fixed');
         });
+        // Mobil Menü Açma/Kapama Fonksiyonu
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
     </script>
 </body>
 </html>
