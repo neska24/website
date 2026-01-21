@@ -141,32 +141,6 @@
         border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 }
-        #home nav {
-        padding-top: 15px !important;
-        padding-bottom: 15px !important;
-    }
-
-    /* 2. Hamburger Menüyü Ortala */
-    .hamburger {
-        top: 50% !important;
-        transform: translateY(-50%);
-        right: 20px !important;
-    }
-
-    /* 3. İsmini Yukarı Çek */
-    h1 {
-        margin-top: 20% !important; /* Biraz daha aşağıda başlasın */
-        font-size: 200% !important;
-        padding-right: 50px;
-        line-height: 1.2;
-    }
-
-    /* 4. Alt Başlığı Düzenle */
-    h1 > small {
-        margin-top: 15px !important;
-        font-size: 40% !important;
-    }
-}
 
         .social-links { margin-top: 100px; display: flex; justify-content: center; gap: 10px; }
         .linkedin:hover { background-color: #0077b5; transition: background-color .4s; }
@@ -245,16 +219,56 @@
         #contact button:hover { background-color: white; color: black; transition: background-color .4s; }
 
         /* RESPONSIVE (MOBİL) */
-        @media screen and (max-width: 768px) {
-            body { font-size: 16px; }
-            h1 { font-size: 250%; }
-            #home nav ul li { width: 50%; }
-            #about .info { flex-direction: column-reverse; text-align: center; }
-            #about img { width: 200px; height: 200px; } /* Mobilde küçülttük */
-            .social-links { flex-direction: column; align-items: center; }
-            .social-links li { width: 80%; }
-            .noir { width: 100%; }
+        /* RESPONSIVE (MOBİL) */
+    @media screen and (max-width: 768px) {
+        body { font-size: 16px; }
+        h1 { font-size: 250%; }
+        
+        /* --- Mobil Menü Ayarları --- */
+        #home nav { padding: 15px 0; position: fixed; top: 0; background-color: rgba(0,0,0,0.95); }
+        
+        .nav-container {
+            justify-content: flex-end; /* Sağa yasla */
+            padding: 0 20px;
         }
+
+        .hamburger { 
+            display: flex; 
+            position: relative; 
+            right: 0;
+        } 
+
+        .nav-links {
+            display: none; 
+            flex-direction: column;
+            position: absolute;
+            top: 60px; 
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.98);
+            text-align: center;
+            padding: 20px 0;
+            border-top: 1px solid #333;
+        }
+
+        .nav-links.active {
+            display: flex;
+        }
+        
+        .nav-links a {
+            padding: 20px;
+            font-size: 22px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* --- Diğer Mobil Düzenlemeler --- */
+        #home nav ul li { width: 50%; }
+        #about .info { flex-direction: column-reverse; text-align: center; }
+        #about img { width: 200px; height: 200px; } 
+        .social-links { flex-direction: column; align-items: center; }
+        .social-links li { width: 80%; }
+        .noir { width: 100%; }
+    }
     </style>
 </head>
 <body>
