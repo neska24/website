@@ -108,20 +108,38 @@
             min-height: 100vh;
         }
 
+        /* 1. MENÜYÜ TAM EKRAN YAP */
         #home nav {
-            margin: 0 auto;
-            max-width: 800px;
-            padding-top: 80px;
+            width: 100%;           /* Ekranı kapla */
+            max-width: 100%;       /* Sınırı kaldır */
+            padding-top: 40px;     /* Üstten biraz boşluk */
+            z-index: 999;
         }
 
+        /* 2. SİYAH BAR (Aşağı kaydırınca gelen) */
+        #home nav.fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;          /* Siyahlık uçtan uca gitsin */
+            background-color: rgba(0, 0, 0, 0.95); /* Simsiyah */
+            padding: 15px 0;      /* Yükseklik ver */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); /* Gölge ekle */
+            transition: background-color .8s;
+        }
+
+        /* 3. LİNKLERİ ORTALA */
         #home nav ul {
-            overflow: hidden;
+            max-width: 1200px;    /* Linkler ortada dursun, dağılmasın */
+            margin: 0 auto;       /* Ortala */
             display: flex;
             justify-content: center;
+            overflow: hidden;
         }
 
         #home nav ul li {
             flex: 1;
+            text-align: center; /* Linkleri ortala */
         }
 
         #home nav a {
@@ -135,21 +153,6 @@
             background-color: rgba(255,255,255,0.1);
         }
 
-        #home nav.fixed {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background-color:rgba(0, 0, 0, 0.95);
-            z-index: 999;
-            padding: 0;
-            transition: background-color .8s;
-        }
-
-        #home nav.fixed ul {
-            max-width: 800px;
-            margin: 0 auto;
-        }
 
         .social-links {
             margin-top: 100px;
@@ -190,7 +193,7 @@
         /* ABOUT SECTION */
         #about {
             background-color: #f4f4f4;
-            padding: 80px 0;
+            padding: 120px 0 80px 0;
         }
 
         #about::before {
@@ -224,10 +227,11 @@
         }
 
         #about img {
-            width: 250px;
-            height: 250px;
+            width: 380px;
+            height: 380px;
             border-radius: 50%;
             object-fit: cover;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
         .signature {
@@ -550,15 +554,34 @@
                 font-size: 180%;
                 margin-top: 80px;
             }
-
+            /* 1. Navigasyonun genel ayarı (Genişliği %100 yapıyoruz) */
             #home nav {
-                width: 100%;
-                padding-top: 40px;
+                width: 100%;           /* Ekranın tamamını kapla */
+                max-width: 100%;       /* Sınırlama koyma */
+                padding-top: 20px;
+                z-index: 999;
             }
 
-            #home nav ul {
-                flex-wrap: wrap;
+/* 2. Aşağı kaydırınca çıkan Siyah Bar */
+            #home nav.fixed {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;          /* Siyahlık sona kadar gitsin */
+                background-color: rgba(0, 0, 0, 0.95); /* Simsiyah */
+                padding: 15px 0;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             }
+
+/* 3. Linkleri ortada tutmak için (Burası önemli) */
+            #home nav ul {
+                max-width: 1200px;    /* Linkler çok dağılmasın, ortada dursun */
+                margin: 0 auto;       /* Ortala */
+                display: flex;
+                justify-content: center;
+            }
+            
+            
 
             #home nav ul li {
                 width: 50%;
