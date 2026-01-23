@@ -104,43 +104,86 @@
 }
 
 /* --- MOBİL AYARLARI (768px ve altı) --- */
-@media screen and (max-width: 768px) {
-    #home nav { padding: 15px 0; position: fixed; top: 0; background-color: rgba(0,0,0,0.95); }
-    
-    .nav-container {
-        justify-content: flex-end; /* İçeriği sağa yasla */
-        padding: 0 20px;
+        /* RESPONSIVE (MOBİL) - TAM ORTALI VERSİYON */
+    @media screen and (max-width: 768px) {
+        body { font-size: 16px; }
+        h1 { font-size: 250%; }
+        
+        /* 1. Üst Barı Sabitle ve Hizala */
+        #home nav { 
+            padding: 10px 0; /* Barın yüksekliğini belirleyen boşluk */
+            position: fixed; 
+            top: 0; 
+            left: 0;
+            width: 100%; 
+            background-color: rgba(0,0,0,0.95);
+            display: flex; /* Esnek kutu modeli */
+            align-items: center; /* İçindekileri (ikonu) dikeyde tam ortala */
+            height: 60px; /* Sabit bir yükseklik verelim ki hesap şaşmasın */
+        }
+        
+        /* 2. İç Konteynır */
+        .nav-container {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end; /* İkonu en sağa yasla */
+            align-items: center; /* İkonu dikeyde ortala */
+            padding: 0 20px; /* Sağdan/soldan boşluk */
+        }
+
+        /* 3. Hamburger İkonu */
+        .hamburger { 
+            display: flex; 
+            position: relative;
+            /* Eskiden kalan kaydırmaları sıfırla */
+            top: auto;
+            right: auto;
+            transform: none; 
+        } 
+
+        /* 4. Açılan Menü (Linkler) - KESİN ORTALAMA */
+        .nav-links {
+            display: none; 
+            flex-direction: column;
+            position: absolute;
+            top: 60px; /* Barın yüksekliği kadar aşağıdan başla */
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.98);
+            text-align: center;
+            
+            /* GİZLİ BOŞLUKLARI SIFIRLA (Sorunu çözen kısım burası) */
+            padding: 0; 
+            margin: 0;
+            list-style: none;
+        }
+
+        .nav-links.active {
+            display: flex;
+        }
+        
+        .nav-links li {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            display: block; /* Tüm satırı kapla */
+            width: 100%;
+            padding: 20px 0;
+            font-size: 22px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        /* Diğer mobil ayarlar */
+        #about .info { flex-direction: column-reverse; text-align: center; }
+        #about img { width: 200px; height: 200px; } 
+        .social-links { flex-direction: column; align-items: center; }
+        .social-links li { width: 80%; }
+        .noir { width: 100%; }
     }
 
-    .hamburger { 
-        display: flex; 
-        position: relative; /* Mobilde akışa girsin */
-        right: 0;
-    } 
-
-    .nav-links {
-        display: none; /* Mobilde menüyü başta gizle */
-        flex-direction: column;
-        position: absolute;
-        top: 60px; /* Üst bardan sonra başlasın */
-        left: 0;
-        width: 100%;
-        background-color: rgba(0, 0, 0, 0.98);
-        text-align: center;
-        padding: 20px 0;
-        border-top: 1px solid #333;
-    }
-
-    .nav-links.active {
-        display: flex;
-    }
-    
-    .nav-links a {
-        padding: 20px;
-        font-size: 22px;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-}
 
         .social-links { margin-top: 100px; display: flex; justify-content: center; gap: 10px; }
         .linkedin:hover { background-color: #0077b5; transition: background-color .4s; }
