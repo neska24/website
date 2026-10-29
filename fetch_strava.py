@@ -47,7 +47,7 @@ def get_all_activities():
             
             if response.status_code != 200:
                 print(f"❌ Hata! Sayfa {page} çekilemedi.")
-                break
+                exit(1)
             
             data = response.json()
             
@@ -67,7 +67,7 @@ def get_all_activities():
             
         except Exception as e:
             print(f"⚠️ Beklenmedik hata: {e}")
-            break
+            exit(1)
             
     print(f"📊 TOPLAM {len(all_activities)} adet ham veri bulundu. Haritası olmayanlar eleniyor...")
 
@@ -83,7 +83,10 @@ def get_all_activities():
             })
             
     print(f"💾 Filtreleme bitti. {len(clean_data)} adet haritalı aktivite 'strava_data.json' dosyasına kaydediliyor.")
-
+    
+    if not clean_data:
+        print("❌ Hiç haritalı aktivite yok, eski dosya korunuyor.")
+        exit(1)
     # Dosyayı kaydet
     with open("strava_data.json", "w", encoding="utf-8") as f:
         json.dump(clean_data, f, ensure_ascii=False)
