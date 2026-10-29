@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neslinur Kalkan — Engineering, Data & the Outdoors</title>
     <meta name="description" content="Neslinur Kalkan — Electronics & Communication and Mathematical Engineering at İTÜ. Data, machine learning and orienteering.">
-    <meta name="theme-color" content="#F7EEE8">
+    <meta name="theme-color" content="#F3F1EA">
     <link rel="icon" href="favicon.svg">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Montserrat:wght@200..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
 
@@ -26,30 +26,35 @@
 
     <style>
         :root {
-            --bg: #F7EEE8;
-            --surface: #FCF7F3;
-            --ink: #170F10;
-            --muted: #6B5F5C;
-            --line: rgba(23, 15, 16, .12);
-            --accent: #E0461C;
-            --accent-soft: rgba(224, 70, 28, .10);
-            --btn-bg: #170F10;
-            --btn-ink: #F7EEE8;
-            --sans: 'Montserrat', system-ui, sans-serif;
-            --mono: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+            /* Oryantiring haritası paleti: kâğıt, kontur kahvesi, parkur moru, orman yeşili */
+            --bg: #F3F1EA;
+            --surface: #FAF9F4;
+            --ink: #1C211D;
+            --muted: #636A63;
+            --line: rgba(28, 33, 29, .12);
+            --accent: #C22F7B;
+            --accent-soft: rgba(194, 47, 123, .10);
+            --contour: #C27A3E;
+            --forest: #2F6B45;
+            --btn-bg: #1C211D;
+            --btn-ink: #F3F1EA;
+            --sans: 'Space Grotesk', system-ui, sans-serif;
+            --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
             --radius: 14px;
             --max: 1160px;
         }
         :root[data-theme="dark"] {
-            --bg: #141011;
-            --surface: #1C1718;
-            --ink: #F3E9E3;
-            --muted: #A39591;
-            --line: rgba(243, 233, 227, .12);
-            --accent: #FF6A3D;
-            --accent-soft: rgba(255, 106, 61, .12);
-            --btn-bg: #F3E9E3;
-            --btn-ink: #141011;
+            --bg: #111412;
+            --surface: #181C19;
+            --ink: #ECEEE7;
+            --muted: #9BA39A;
+            --line: rgba(236, 238, 231, .12);
+            --accent: #E2579F;
+            --accent-soft: rgba(226, 87, 159, .14);
+            --contour: #C98A55;
+            --forest: #6FAF84;
+            --btn-bg: #ECEEE7;
+            --btn-ink: #111412;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -79,7 +84,7 @@
         header.scrolled { border-bottom-color: var(--line); }
         .nav { display: flex; align-items: center; justify-content: space-between; height: 68px; }
         .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 17px; letter-spacing: -.02em; }
-        .brand-mark { width: 22px; height: 22px; }
+        .brand-mark { width: 26px; height: 26px; }
         .brand em { color: var(--accent); font-style: normal; }
         .nav-links { display: flex; gap: 4px; }
         .nav-links a {
@@ -109,16 +114,44 @@
         .btn.ghost:hover { border-color: var(--ink); }
 
         /* ---------- HERO ---------- */
-        #home { min-height: 100vh; display: flex; align-items: center; padding: 120px 0 60px; }
-        #home > .container { width: 100%; min-width: 0; }
-        .hero { display: grid; grid-template-columns: minmax(0,1.3fr) minmax(0,1fr); gap: 48px; align-items: center; }
-        .hero > * { min-width: 0; }
-        .hero h1 {
-            font-weight: 300; font-size: clamp(44px, 7vw, 92px);
-            line-height: 1.02; letter-spacing: -.035em; margin: 20px 0 24px;
+        /* ---------- HERO (full-bleed contour map) ---------- */
+        #home { position: relative; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 120px 0 40px; overflow: hidden; }
+        #home > .container { width: 100%; min-width: 0; position: relative; z-index: 1; }
+        #dots { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
+        .hero-content { pointer-events: none; }
+        .hero-content a { pointer-events: auto; }
+        .hero-content h1 {
+            font-weight: 300; font-size: clamp(52px, 9vw, 132px);
+            line-height: .98; letter-spacing: -.045em; margin: 20px 0 28px;
         }
-        .hero h1 em { font-style: normal; color: var(--accent); }
-        .hero p.lead { font-size: 18px; color: var(--muted); max-width: 520px; font-weight: 400; }
+        .hero-content h1 em { font-style: normal; color: var(--accent); }
+        .hero-content p.lead { font-size: 19px; color: var(--muted); max-width: 520px; }
+        .hero-content .lead, .hero-content .eyebrow { text-shadow: 0 0 18px var(--bg), 0 0 6px var(--bg); }
+        .map-legend { display: flex; justify-content: space-between; gap: 16px; margin-top: auto; padding-top: 72px; pointer-events: none; }
+        .map-legend .mono { text-shadow: 0 0 10px var(--bg); }
+
+        /* ---------- EXPERIENCE (course) ---------- */
+        .course { position: relative; }
+        .course-track, .course-progress { position: absolute; left: 29px; top: 20px; width: 2px; }
+        .course-track { bottom: 20px; background: repeating-linear-gradient(to bottom, var(--line) 0 6px, transparent 6px 12px); }
+        .course-progress { height: 0; background: var(--accent); }
+        .leg { display: grid; grid-template-columns: 60px 1fr; gap: 28px; padding: 30px 0; position: relative; }
+        .leg-edge { padding: 6px 0; align-items: center; }
+        .marker { position: relative; width: 60px; height: 40px; display: grid; place-items: center; }
+        .marker svg { width: 40px; height: 40px; background: var(--bg); border-radius: 50%; }
+        .marker svg * { fill: none; stroke: var(--muted); stroke-width: 2; transition: stroke .4s, fill .4s; }
+        .marker b { position: absolute; left: 52px; top: -8px; font: 500 12px var(--mono); color: var(--muted); transition: color .4s; }
+        .leg.done .marker svg * { stroke: var(--accent); }
+        .leg.done .marker svg circle:first-child, .leg.done .marker svg path { fill: var(--accent-soft); }
+        .leg.done .marker b { color: var(--accent); }
+        .leg-body { display: grid; grid-template-columns: 220px 1fr; gap: 32px; padding-top: 8px; }
+        .leg-edge .leg-body { display: flex; gap: 16px; align-items: center; padding-top: 0; }
+        .role + .role { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--line); }
+        .role h3 { display: inline; margin-right: 12px; }
+        .role .role-date { display: inline-block; margin-bottom: 14px; }
+        .role ul { margin-top: 12px; }
+        .finish .next-link { font-weight: 500; border-bottom: 1px solid var(--line); padding-bottom: 2px; transition: color .2s, border-color .2s; }
+        .finish .next-link:hover { color: var(--accent); border-color: var(--accent); }
         .hero-ctas { display: flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
         .reveal-line { display: block; overflow: hidden; }
         .reveal-line { padding-bottom: .06em; }
@@ -128,20 +161,6 @@
         .fade { opacity: 0; animation: belir 1s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: .45s; }
         .fade.d2 { animation-delay: .6s; } .fade.d3 { animation-delay: .75s; }
         @keyframes belir { from { opacity: 0; transform: translateY(14px); filter: blur(5px); } to { opacity: 1; transform: none; filter: none; } }
-
-        #dots { width: 100%; max-width: 440px; aspect-ratio: 1; margin-left: auto; display: block; cursor: crosshair; touch-action: pan-y; }
-
-        .marquee {
-            margin-top: 72px; border-top: 1px solid var(--line); padding-top: 20px;
-            display: flex; gap: 24px; align-items: center; overflow: hidden;
-        }
-        .marquee-track { display: flex; gap: 40px; white-space: nowrap; animation: scroll 38s linear infinite; }
-        .marquee-track span { font-size: 15px; font-weight: 500; color: var(--muted); }
-        .marquee:hover .marquee-track { animation-play-state: paused; }
-        @keyframes scroll { to { transform: translateX(-50%); } }
-        .marquee-mask { overflow: hidden; flex: 1; min-width: 0;
-            -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-                    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
 
         /* ---------- SECTIONS ---------- */
         section.block { padding: 120px 0; border-top: 1px solid var(--line); }
@@ -168,8 +187,8 @@
         .skill h3 { font-size: 15px; font-weight: 600; margin: 10px 0 14px; }
         .tags { display: flex; flex-wrap: wrap; gap: 8px; }
         .tag {
-            font-family: var(--mono); font-size: 12px; padding: 5px 10px; border-radius: 8px;
-            border: 1px solid var(--line); color: var(--ink); background: var(--bg);
+            font-family: var(--mono); --tag: var(--forest); font-size: 12px; padding: 5px 10px; border-radius: 8px;
+            border: 1px solid color-mix(in srgb, var(--forest) 28%, transparent); color: var(--forest); background: color-mix(in srgb, var(--forest) 6%, var(--bg));
         }
 
         /* EXPERIENCE */
@@ -209,8 +228,8 @@
         #map { height: 520px; width: 100%; background: var(--surface); }
         .leaflet-container img { max-width: none !important; }
         /* OSM karolarını sitenin krem/koyu tonuna boya */
-        .map-tiles { filter: grayscale(1) sepia(.28) brightness(1.04) contrast(.88); }
-        :root[data-theme="dark"] .map-tiles { filter: grayscale(1) invert(1) sepia(.18) brightness(.82) contrast(.92); }
+        .map-tiles { filter: grayscale(1) sepia(.12) brightness(1.05) contrast(.86); }
+        :root[data-theme="dark"] .map-tiles { filter: grayscale(1) invert(1) brightness(.8) contrast(.9); }
         .map-label { position: absolute; z-index: 500; right: 16px; top: 16px; padding: 6px 10px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); }
         .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--surface); color: var(--ink); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.12); }
         .leaflet-popup-content { font-family: var(--sans); font-size: 14px; margin: 14px 16px; }
@@ -270,11 +289,12 @@
 
         /* ---------- DARK BAND (sports funnel) ---------- */
         .invert {
-            --bg: #141011; --surface: #1C1718; --ink: #F3E9E3; --muted: #A39591;
-            --line: rgba(243,233,227,.12); --accent: #FF6A3D; --accent-soft: rgba(255,106,61,.12);
+            --bg: #111412; --surface: #181C19; --ink: #ECEEE7; --muted: #9BA39A;
+            --line: rgba(236,238,231,.12); --accent: #E2579F; --accent-soft: rgba(226,87,159,.14);
+            --contour: #C98A55; --forest: #6FAF84;
             background: var(--bg); color: var(--ink);
         }
-        :root[data-theme="dark"] .invert { --bg: #0D0A0B; --surface: #171213; }
+        :root[data-theme="dark"] .invert { --bg: #0B0D0B; --surface: #141714; }
         .funnel { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
         .funnel-sticky { position: sticky; top: 120px; align-self: start; }
         .funnel-sticky p { font-size: 22px; font-weight: 300; letter-spacing: -.01em; max-width: 360px; }
@@ -300,8 +320,6 @@
 
         /* ---------- MOBILE ---------- */
         @media (max-width: 900px) {
-            .hero { grid-template-columns: minmax(0,1fr); }
-            #dots { max-width: 220px; margin: 0; order: -1; }
             .sec-head { grid-template-columns: 1fr; gap: 12px; margin-bottom: 40px; }
             .about { grid-template-columns: 1fr; gap: 40px; }
             .portrait { max-width: 340px; }
@@ -311,12 +329,17 @@
             .big-num { font-size: 72px; margin: 8px 0 4px; }
             .steps { padding: 24px 0 12vh; }
             .skills { grid-template-columns: 1fr; }
-            .exp-row { grid-template-columns: 1fr; gap: 10px; padding: 28px 0; }
+            .leg-body { grid-template-columns: 1fr; gap: 10px; }
+            .map-legend { flex-direction: column; gap: 4px; }
             .two-col { grid-template-columns: 1fr; gap: 48px; }
             .contact-card { grid-template-columns: 1fr; padding: 32px 24px; }
         }
         @media (max-width: 760px) {
             .container { padding: 0 16px; }
+            .leg { grid-template-columns: 44px 1fr; gap: 14px; }
+            .marker { width: 44px; }
+            .marker b { left: 38px; }
+            .course-track, .course-progress { left: 21px; }
             .menu-btn { display: grid; }
             .nav-links {
                 display: none; position: absolute; top: 68px; left: 0; right: 0;
@@ -338,9 +361,10 @@
 <header id="top">
     <div class="container nav">
         <a href="#home" class="brand" aria-label="Neslinur Kalkan — home">
-            <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
-                <rect x="1.5" y="1.5" width="21" height="21" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
-                <path d="M2.5 2.5 L21.5 21.5 L2.5 21.5 Z" fill="var(--accent)"/>
+            <svg class="brand-mark" viewBox="0 0 512 512" aria-hidden="true">
+                <rect x="16" y="16" width="480" height="480" rx="108" fill="var(--ink)"/>
+                <g fill="none" stroke="var(--bg)" stroke-width="40"><path d="M96 364 V148 L212 364 V148"/><path d="M280 148 V364"/><path d="M378 148 L288 258 L382 364"/></g>
+                <circle cx="430" cy="344" r="24" fill="var(--accent)"/>
             </svg>
             <span>neslinur<em>.</em>kalkan</span>
         </a>
@@ -365,32 +389,22 @@
 <main>
     <!-- HERO -->
     <section id="home">
-        <div class="container">
-            <div class="hero">
-                <div>
-                    <div class="eyebrow fade">İTÜ · Electronics &amp; Communication + Mathematical Engineering</div>
-                    <h1>
-                        <span class="reveal-line"><span>Neslinur</span></span>
-                        <span class="reveal-line"><span>Kalkan<em>.</em></span></span>
-                    </h1>
-                    <p class="lead fade d2">Engineer working where data, machine learning and the outdoors meet — from Redshift pipelines to GPS tracks.</p>
-                    <div class="hero-ctas fade d3">
-                        <a class="btn" href="mailto:neslinurkalkan24@gmail.com">Get in touch <span aria-hidden="true">→</span></a>
-                        <a class="btn ghost" href="https://www.linkedin.com/in/neslinur-kalkan-562422218" target="_blank" rel="noopener">LinkedIn</a>
-                    </div>
-                </div>
-                <canvas id="dots" aria-hidden="true"></canvas>
+        <canvas id="dots" aria-hidden="true"></canvas>
+        <div class="container hero-content">
+            <div class="eyebrow fade">İTÜ · Electronics &amp; Communication + Mathematical Engineering</div>
+            <h1>
+                <span class="reveal-line"><span>Neslinur</span></span>
+                <span class="reveal-line"><span>Kalkan<em>.</em></span></span>
+            </h1>
+            <p class="lead fade d2">I build data pipelines and machine learning models. In my free time, I run, dive and explore nature.</p>
+            <div class="hero-ctas fade d3">
+                <a class="btn" href="mailto:neslinurkalkan24@gmail.com">Get in touch <span aria-hidden="true">→</span></a>
+                <a class="btn ghost" href="https://www.linkedin.com/in/neslinur-kalkan-562422218" target="_blank" rel="noopener">LinkedIn</a>
             </div>
-
-            <div class="marquee fade d3">
-                <span class="mono" style="white-space:nowrap">Experience at</span>
-                <div class="marquee-mask">
-                    <div class="marquee-track">
-                        <span>TikTak</span><span>ASELSAN</span><span>TÜBİTAK BİLGEM</span><span>İTÜ Railway Systems Lab</span><span>ROKETSAN CAMPus</span><span>Sungkyunkwan University</span>
-                        <span>TikTak</span><span>ASELSAN</span><span>TÜBİTAK BİLGEM</span><span>İTÜ Railway Systems Lab</span><span>ROKETSAN CAMPus</span><span>Sungkyunkwan University</span>
-                    </div>
-                </div>
-            </div>
+        </div>
+        <div class="container map-legend fade d3">
+            <span class="mono">41.01°N 28.98°E &nbsp;→&nbsp; 37.29°N 126.97°E</span>
+            <span class="mono legend-right">Scale 1:10 000 · Contour interval 5 m</span>
         </div>
     </section>
 
@@ -403,11 +417,11 @@
             </div>
             <div class="about">
                 <div class="rv">
-                    <p>Double-major student in Electronics and Communication Engineering and Mathematical Engineering at Istanbul Technical University, combining analytical thinking with creativity from my background in sports and arts. Experienced in data analysis, optimization, and applied machine learning, driven to apply theoretical knowledge to real-world industry problems.</p>
-                    <p class="muted">As a former national orienteering athlete who competed at JWOC 2022 in Portugal, I bring the same precision and problem-solving mindset to engineering challenges. Currently exploring the intersection of GPS technology, data science, and real-world applications.</p>
+                    <p>I study Electronics and Communication Engineering and Mathematical Engineering (double major) at Istanbul Technical University. I have experience in data analysis, optimization and machine learning. I like using what I learn in class to solve real problems in industry. Sports and art help me think in a creative way.</p>
+                    <p class="muted">I am a national orienteering athlete, and I raced at the Junior World Championships (JWOC 2022) in Portugal. Orienteering taught me to plan carefully and make quick decisions, and I use the same skills in engineering. Right now I am focused on data engineering and machine learning.</p>
                     <div class="highlight">
                         <span class="dot"></span>
-                        <div><strong>Morehead-Cain Global Scholars Fellowship Finalist</strong><br><span class="mono">Leadership · scholarship · character · physical vigor</span></div>
+                        <div><strong>Morehead-Cain Global Scholars Fellowship Finalist</strong><br><span class="mono">Leadership · academics · character · sport</span></div>
                     </div>
                     <div class="stamp-wrap" id="stamp" title="Junior World Orienteering Championships 2022, Portugal">
                         <svg class="stamp" viewBox="0 0 120 120" aria-hidden="true">
@@ -435,8 +449,8 @@
                 </div>
                 <div class="skill rv">
                     <div class="eyebrow">B · Data &amp; ML</div>
-                    <h3>Tools &amp; technologies</h3>
-                    <div class="tags"><span class="tag">Machine Learning</span><span class="tag">Data Analysis</span><span class="tag">AWS Redshift</span><span class="tag">Amazon AWS</span><span class="tag">GPS &amp; Localization</span></div>
+                    <h3>Data engineering &amp; ML</h3>
+                    <div class="tags"><span class="tag">Amazon Redshift</span><span class="tag">PostgreSQL</span><span class="tag">Apache Airflow</span><span class="tag">ETL/ELT</span><span class="tag">Tableau</span><span class="tag">Machine Learning</span><span class="tag">Data Analysis</span></div>
                 </div>
                 <div class="skill rv">
                     <div class="eyebrow">C · Web</div>
@@ -452,55 +466,94 @@
         <div class="container">
             <div class="sec-head rv">
                 <div class="eyebrow">02 — Experience</div>
-                <h2>Where theory met<br><em>real systems.</em></h2>
+                <h2>The course<br><em>so far.</em></h2>
             </div>
 
-            <div class="exp-row rv">
-                <div class="exp-num">01</div>
-                <div class="exp-meta"><div class="org">TikTak</div><span class="mono">Sep 2025 – Present</span></div>
-                <div class="exp-body">
-                    <h3>Data Science Intern</h3>
-                    <ul>
-                        <li>Conducted exploratory data analysis and RFM segmentation on car-rental records using Python</li>
-                        <li>Queried and managed large datasets on Amazon AWS Redshift (SQL)</li>
-                        <li>Generated actionable insights for operations—identifying high-revenue routes and pricing strategies</li>
-                    </ul>
+            <div class="course" id="course">
+                <div class="course-track" aria-hidden="true"></div>
+                <div class="course-progress" id="courseProgress" aria-hidden="true"></div>
+
+                <div class="leg leg-edge">
+                    <div class="marker"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 6 L34 31 L6 31 Z"/></svg></div>
+                    <div class="leg-body"><span class="mono">Start · 2024</span></div>
                 </div>
-            </div>
-            <div class="exp-row rv">
-                <div class="exp-num">02</div>
-                <div class="exp-meta"><div class="org">ASELSAN</div><span class="mono">Jul 2025 – Aug 2025</span></div>
-                <div class="exp-body">
-                    <h3>Engineer Intern</h3>
-                    <ul>
-                        <li>Assisted in the design and analysis of guidance systems for missile applications</li>
-                        <li>Supported the modeling and simulation of guidance algorithms using MATLAB/Simulink</li>
-                        <li>Observed integration workflows between guidance, control, and navigation subsystems</li>
-                    </ul>
+
+                <div class="leg rv">
+                    <div class="marker"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="14"/></svg><b>1</b></div>
+                    <div class="leg-body">
+                        <div class="exp-meta"><div class="org">TÜBİTAK BİLGEM</div><span class="mono">Sep 2024 – Oct 2024</span></div>
+                        <div class="exp-body">
+                            <h3>Engineer Intern</h3>
+                            <ul>
+                                <li>Set up input/output functions on microcontrollers using C++</li>
+                                <li>Built accurate timing for UART communication</li>
+                                <li>Improved my skills in embedded programming and reading data from devices</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="exp-row rv">
-                <div class="exp-num">03</div>
-                <div class="exp-meta"><div class="org">İTÜ Railway Systems Laboratory</div><span class="mono">Dec 2024 – Jul 2025</span></div>
-                <div class="exp-body">
-                    <h3>Laboratory Intern</h3>
-                    <ul>
-                        <li>Conducting research on driving systems, vehicle positioning, and GPS improvement</li>
-                        <li>Developing a project focused on optimizing rail transportation technologies</li>
-                        <li>Utilizing advanced localization and navigation techniques to enhance system efficiency</li>
-                    </ul>
+
+                <div class="leg rv">
+                    <div class="marker"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="14"/></svg><b>2</b></div>
+                    <div class="leg-body">
+                        <div class="exp-meta"><div class="org">İTÜ Railway Systems Laboratory</div><span class="mono">Dec 2024 – Jul 2025</span></div>
+                        <div class="exp-body">
+                            <h3>Laboratory Intern</h3>
+                            <ul>
+                                <li>Did research on train driving systems, vehicle positioning and better GPS accuracy</li>
+                                <li>Worked on a project to improve rail transportation technology</li>
+                                <li>Used localization and navigation methods to make the system more efficient</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="exp-row rv">
-                <div class="exp-num">04</div>
-                <div class="exp-meta"><div class="org">TÜBİTAK BİLGEM</div><span class="mono">Sep 2024 – Oct 2024</span></div>
-                <div class="exp-body">
-                    <h3>Engineer Intern</h3>
-                    <ul>
-                        <li>Gained hands-on experience in configuring I/O functionalities in MCUs at C++ level</li>
-                        <li>Implemented precise timing mechanisms within UART communication protocols</li>
-                        <li>Developed strong skills in embedded programming and data retrieval</li>
-                    </ul>
+
+                <div class="leg rv">
+                    <div class="marker"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="14"/></svg><b>3</b></div>
+                    <div class="leg-body">
+                        <div class="exp-meta"><div class="org">ASELSAN</div><span class="mono">Jul 2025 – Aug 2025</span></div>
+                        <div class="exp-body">
+                            <h3>Engineer Intern</h3>
+                            <ul>
+                                <li>Helped design and analyze guidance systems</li>
+                                <li>Modeled and simulated guidance algorithms in MATLAB/Simulink</li>
+                                <li>Learned how guidance, control and navigation systems work together</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="leg rv">
+                    <div class="marker"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="14"/></svg><b>4</b></div>
+                    <div class="leg-body">
+                        <div class="exp-meta"><div class="org">TikTak</div><span class="mono">Sep 2025 – Aug 2026</span></div>
+                        <div class="exp-body">
+                            <div class="role">
+                                <h3>Data Science Intern</h3><span class="mono role-date">Sep 2025 – Mar 2026</span>
+                                <ul>
+                                    <li>Analyzed car-rental data with Python and grouped customers with RFM segmentation</li>
+                                    <li>Wrote SQL queries on large datasets in Amazon Redshift</li>
+                                    <li>Found useful insights for the operations team, like high-revenue routes and better pricing</li>
+                                </ul>
+                            </div>
+                            <div class="role">
+                                <h3>Data Engineer Intern</h3><span class="mono role-date">Mar 2026 – Aug 2026</span>
+                                <ul>
+                                    <li>Built and maintained SQL-based ETL/ELT pipelines on Amazon Redshift</li>
+                                    <li>Scheduled and monitored production data workflows with Apache Airflow</li>
+                                    <li>Built Tableau dashboards for the operations team</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="leg leg-edge">
+                    <div class="marker"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="15"/><circle cx="20" cy="20" r="9"/></svg></div>
+                    <div class="leg-body finish">
+                        <span class="mono">Next leg</span>
+                        <a href="#contact" class="next-link">Open to new roles in data engineering &amp; ML <span aria-hidden="true">→</span></a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -514,14 +567,15 @@
                 <h2>Certifications<br><em>&amp; achievements.</em></h2>
             </div>
             <div class="cert-grid">
-                <div class="cert rv"><div class="top"><span class="org">Morehead-Cain</span><span class="mono">Finalist</span></div><h3>Global Scholars Fellowship</h3><p>Recognized for leadership, scholarship, character, and physical vigor</p></div>
-                <div class="cert rv"><div class="top"><span class="org">TÜBİTAK · Arçelik · Baykar · Cezeri</span><span class="mono">2024</span></div><h3>Artificial Intelligence Expertise Program</h3><p>Specialized training in AI innovation and applications</p></div>
-                <div class="cert rv"><div class="top"><span class="org">Coursera</span><span class="mono">Nov 2025</span></div><h3>Supervised Machine Learning: Regression and Classification</h3><p>Linear &amp; logistic regression, regularization, gradient descent</p></div>
-                <div class="cert rv"><div class="top"><span class="org">ROKETSAN</span><span class="mono">Program</span></div><h3>CAMPus Engineering Program</h3><p>Learning and Development Camp for Engineers</p></div>
-                <div class="cert rv"><div class="top"><span class="org">MathWorks</span><span class="mono">Jan 2024</span></div><h3>Control Design Onramp with Simulink</h3><p>Control system design and simulation</p></div>
-                <div class="cert rv"><div class="top"><span class="org">MathWorks</span><span class="mono">Nov 2023</span></div><h3>Simulink Onramp</h3><p>Model-based design fundamentals</p></div>
-                <div class="cert rv"><div class="top"><span class="org">Turkish Orienteering Federation</span><span class="mono">Coach</span></div><h3>Level 1 Orienteering Coach</h3><p>Certified orienteering instructor</p></div>
-                <div class="cert rv"><div class="top"><span class="org">Istanbul Orienteering Sports Club</span><span class="mono">2021</span></div><h3>Licensed Athlete</h3><p>National level competitor</p></div>
+                <div class="cert rv"><div class="top"><span class="org">Morehead-Cain · Finalist</span><span class="mono">Mar 2025</span></div><h3>Global Scholars Fellowship</h3><p>Selected for leadership, academic success, character and sport</p></div>
+                <div class="cert rv"><div class="top"><span class="org">TÜBİTAK · Arçelik · Baykar · Cezeri</span><span class="mono">2024</span></div><h3>Artificial Intelligence Expertise Program</h3><p>Training program on AI and how it is used in industry</p></div>
+                <div class="cert rv"><div class="top"><span class="org">Coursera</span><span class="mono">Nov 2025</span></div><h3>Supervised Machine Learning: Regression and Classification</h3><p>Linear and logistic regression, regularization, gradient descent</p></div>
+                <div class="cert rv"><div class="top"><span class="org">ROKETSAN</span><span class="mono">Program</span></div><h3>CAMPus Engineering Program</h3><p>Training camp for engineering students</p></div>
+                <div class="cert rv"><div class="top"><span class="org">MathWorks</span><span class="mono">Jan 2024</span></div><h3>Control Design Onramp with Simulink</h3><p>Designing and simulating control systems</p></div>
+                <div class="cert rv"><div class="top"><span class="org">MathWorks</span><span class="mono">Nov 2023</span></div><h3>Simulink Onramp</h3><p>Basics of model-based design</p></div>
+                <div class="cert rv"><div class="top"><span class="org">Turkish Orienteering Federation</span><span class="mono">Jun 2025</span></div><h3>Level 1 Orienteering Coach</h3><p>Certified to teach orienteering</p></div>
+                <div class="cert rv"><div class="top"><span class="org">Istanbul Orienteering Sports Club</span><span class="mono">2021 – Present</span></div><h3>Licensed Athlete</h3><p>Racing at national level</p></div>
+                <div class="cert rv"><div class="top"><span class="org">CMAS · 1★</span><span class="mono">Jun 2025</span></div><h3>One Star Scuba Diver</h3><p>International open-water diving certificate</p></div>
             </div>
         </div>
     </section>
@@ -538,11 +592,11 @@
                 <div class="funnel-sticky">
                     <div class="eyebrow" id="bigLabel">Routes recorded</div>
                     <div class="big-num"><span id="bigNum">0</span><span class="big-unit" id="bigUnit"></span></div>
-                    <p>From a first training run to a world championship start line.</p>
+                    <p>From my first training run to a world championship start.</p>
                 </div>
                 <div class="steps" id="steps">
-                    <div class="step" data-key="routes" data-label="Routes recorded" data-unit=""><div><h4>Routes</h4><p>Activities with a GPS track, synced from Strava</p></div><span class="mono" id="sRoutes">—</span></div>
-                    <div class="step" data-key="km" data-label="Kilometres covered" data-unit=" km"><div><h4>Distance</h4><p>Running, hiking and orienteering, all on foot</p></div><span class="mono" id="sKm">—</span></div>
+                    <div class="step" data-key="routes" data-label="Routes recorded" data-unit=""><div><h4>Routes</h4><p>Activities with a GPS track, from Strava</p></div><span class="mono" id="sRoutes">—</span></div>
+                    <div class="step" data-key="km" data-label="Kilometres covered" data-unit=" km"><div><h4>Distance</h4><p>Running, hiking and orienteering</p></div><span class="mono" id="sKm">—</span></div>
                     <div class="step" data-key="countries" data-val="21" data-label="Countries visited" data-unit=""><div><h4>Countries</h4><p>Travel, races and an exchange semester in Seoul</p></div><span class="mono">21</span></div>
                     <div class="step" data-key="sports" data-val="5" data-label="Sports" data-unit="+"><div><h4>Sports</h4><p>Run · hike · orienteer · dive · lift</p></div><span class="mono">5+</span></div>
                     <div class="step" data-key="jwoc" data-val="2022" data-label="World championships" data-unit=""><div><h4>JWOC</h4><p>Junior World Orienteering Championships, Portugal</p></div><span class="mono">2022</span></div>
@@ -558,9 +612,9 @@
                 <div class="rv">
                     <h3>Achievements</h3>
                     <div class="stagger rv-s">
-                    <div class="ach"><h4>Orienteering</h4><p>Competed at JWOC 2022 in Portugal, Turkish National Champion, combining physical endurance with navigation skills and GPS technology understanding.</p></div>
-                    <div class="ach"><h4>İTÜ Orienteering Team</h4><p>Served as Chairperson (2022–2023) and Audit Board Member (2024–2025), leading the team to national championships.</p></div>
-                    <div class="ach"><h4>Nature sports</h4><p>Active in running, scuba diving, camping, and various outdoor activities. Passionate about exploring nature through sports.</p></div>
+                    <div class="ach"><h4>Orienteering</h4><p>Raced at JWOC 2022 in Portugal and became Turkish National Champion. Orienteering is running and map reading at the same time.</p></div>
+                    <div class="ach"><h4>İTÜ Orienteering Team</h4><p>Team president (2022–2023) and audit board member (2024–2025). I led the team at national championships.</p></div>
+                    <div class="ach"><h4>Nature sports</h4><p>I love running, scuba diving, camping and spending time in nature.</p></div>
                     </div>
                 </div>
                 <div class="rv">
@@ -609,57 +663,150 @@
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    /* ---------- Hero: interactive dotted orienteering control flag ---------- */
-    (function dotFlag() {
+    /* ---------- Hero: full-bleed topographic contours + orienteering course ---------- */
+    (function contours() {
+        const home = document.getElementById('home');
         const cv = document.getElementById('dots'), ctx = cv.getContext('2d');
-        let W, H, dpr, pts = [], mouse = { x: -9999, y: -9999 }, t0 = performance.now();
+        let W, H, S, cols, rows, g, dpr, t0 = performance.now(), visible = true, running = false;
+        const m = { x: .5, y: .5, tx: .5, ty: .5, a: 0, ta: 0 };
+        const CELL = 16;
+
+        // Sabit tohumlu rastgele: her açılışta aynı arazi
+        function rng(seed) { return () => { seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+        let hills = [];
 
         function build() {
             dpr = Math.min(window.devicePixelRatio || 1, 2);
-            const r = cv.getBoundingClientRect(); W = r.width; H = r.height;
+            W = home.clientWidth; H = home.clientHeight; S = Math.max(W, H);
             cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-            pts = [];
-            const n = 23, pad = W * .1, size = W - pad * 2, step = size / (n - 1);
-            for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
-                const lower = j > i, diag = i === j, edge = i === 0 || j === 0 || i === n - 1 || j === n - 1;
-                if (!lower && !edge && !diag && Math.random() < .72) continue;
-                const hx = pad + i * step, hy = pad + j * step;
-                const a = Math.random() * Math.PI * 2, d = W * (.35 + Math.random() * .4);
-                pts.push({
-                    hx, hy, x: W / 2 + Math.cos(a) * d, y: H / 2 + Math.sin(a) * d, vx: 0, vy: 0,
-                    r: lower || diag ? 2.2 : 1.4, hot: lower || diag,
-                    delay: (i + j) * 18 + Math.random() * 160
-                });
-            }
-            if (reduceMotion) pts.forEach(p => { p.x = p.hx; p.y = p.hy; });
+            cols = Math.ceil(W / CELL); rows = Math.ceil(H / CELL);
+            g = new Float32Array((cols + 1) * (rows + 1));
+            const R = rng(2022); hills = [];
+            const aw = W / S, ah = H / S, n = Math.round(10 * aw * ah / .5) + 8;
+            for (let i = 0; i < n; i++) hills.push({ x: R() * aw, y: R() * ah, s: .07 + R() * .12, h: (R() < .25 ? -1 : 1) * (.5 + R() * .8), ph: R() * 6.28 });
         }
 
-        function frame(now) {
-            const el = now - t0;
+        function field(x, y, t) {
+            let v = 0;
+            for (const k of hills) {
+                const dx = x - (k.x + Math.sin(t * .00012 + k.ph) * .02), dy = y - (k.y + Math.cos(t * .0001 + k.ph) * .02);
+                v += k.h * Math.exp(-(dx * dx + dy * dy) / (2 * k.s * k.s));
+            }
+            v += .06 * Math.sin(x * 14 + t * .0003) * Math.cos(y * 11);
+            const dx = x - m.x, dy = y - m.y;
+            v += m.a * .8 * Math.exp(-(dx * dx + dy * dy) / (2 * .05 * .05));   // imleç = yeni bir tepe
+            return v;
+        }
+
+        function draw(now) {
+            running = false;
+            const t = reduceMotion ? 0 : now - t0;
+            m.x += (m.tx - m.x) * .08; m.y += (m.ty - m.y) * .08; m.a += (m.ta - m.a) * .05;
+            for (let j = 0; j <= rows; j++) for (let i = 0; i <= cols; i++) g[j * (cols + 1) + i] = field(i * CELL / S, j * CELL / S, t);
+
+            ctx.globalCompositeOperation = 'source-over';
             ctx.clearRect(0, 0, W, H);
-            const accent = css('--accent'), muted = css('--muted');
-            for (const p of pts) {
-                if (el > p.delay || reduceMotion) {
-                    let fx = (p.hx - p.x) * .06, fy = (p.hy - p.y) * .06;
-                    const dx = p.x - mouse.x, dy = p.y - mouse.y, dist = Math.hypot(dx, dy), R = W * .16;
-                    if (dist < R && dist > 0) { const f = (1 - dist / R) * 3.2; fx += dx / dist * f; fy += dy / dist * f; }
-                    p.vx = (p.vx + fx) * .78; p.vy = (p.vy + fy) * .78;
-                    p.x += p.vx; p.y += p.vy;
+            const contour = css('--contour'), accent = css('--accent');
+            const reveal = reduceMotion ? 1 : Math.min(1, t / 1400);
+            ctx.strokeStyle = contour; ctx.lineJoin = 'round';
+            const C = cols + 1;
+            for (let L = 0; L < 40; L++) {
+                const lv = -1.2 + L * .11, index = L % 5 === 0;
+                ctx.lineWidth = index ? 1.6 : .8;
+                ctx.globalAlpha = (index ? .9 : .55) * reveal;
+                ctx.beginPath();
+                for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+                    const a = g[j * C + i], b = g[j * C + i + 1], c = g[(j + 1) * C + i + 1], d = g[(j + 1) * C + i];
+                    const k = (a > lv) << 3 | (b > lv) << 2 | (c > lv) << 1 | (d > lv);
+                    if (k === 0 || k === 15) continue;
+                    const x0 = i * CELL, y0 = j * CELL;
+                    const T = [x0 + (lv - a) / (b - a) * CELL, y0], Rr = [x0 + CELL, y0 + (lv - b) / (c - b) * CELL],
+                          B = [x0 + (lv - d) / (c - d) * CELL, y0 + CELL], Lf = [x0, y0 + (lv - a) / (d - a) * CELL];
+                    const seg = (p, q) => { ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]); };
+                    switch (k) {
+                        case 1: case 14: seg(Lf, B); break;
+                        case 2: case 13: seg(B, Rr); break;
+                        case 3: case 12: seg(Lf, Rr); break;
+                        case 4: case 11: seg(T, Rr); break;
+                        case 6: case 9: seg(T, B); break;
+                        case 7: case 8: seg(T, Lf); break;
+                        case 5: seg(T, Rr); seg(Lf, B); break;
+                        case 10: seg(T, Lf); seg(B, Rr); break;
+                    }
                 }
-                const alpha = reduceMotion ? 1 : Math.min(1, Math.max(0, (el - p.delay) / 500));
-                ctx.globalAlpha = alpha * (p.hot ? 1 : .7);
-                ctx.fillStyle = p.hot ? accent : muted;
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+                ctx.stroke();
             }
-            ctx.globalAlpha = 1;
-            requestAnimationFrame(frame);
-        }
 
-        const move = (x, y) => { const r = cv.getBoundingClientRect(); mouse.x = x - r.left; mouse.y = y - r.top; };
-        cv.addEventListener('pointermove', e => move(e.clientX, e.clientY));
-        cv.addEventListener('pointerleave', () => { mouse.x = mouse.y = -9999; });
-        window.addEventListener('resize', () => { build(); });
-        build(); requestAnimationFrame(frame);
+            // Yazının olduğu bölgede çizgileri soldur (okunabilirlik), alt kenarı yumuşat
+            ctx.globalAlpha = 1;
+            ctx.globalCompositeOperation = 'destination-in';
+            const mobile = W < 760;
+            const lg = mobile ? ctx.createLinearGradient(0, 0, 0, H) : ctx.createLinearGradient(0, 0, W, 0);
+            if (mobile) { lg.addColorStop(0, 'rgba(0,0,0,.35)'); lg.addColorStop(.85, 'rgba(0,0,0,.35)'); lg.addColorStop(1, 'rgba(0,0,0,0)'); }
+            else { lg.addColorStop(0, 'rgba(0,0,0,.22)'); lg.addColorStop(.42, 'rgba(0,0,0,.3)'); lg.addColorStop(.62, '#000'); lg.addColorStop(1, '#000'); }
+            ctx.fillStyle = lg; ctx.fillRect(0, 0, W, H);
+            const bg = ctx.createLinearGradient(0, 0, 0, H);
+            bg.addColorStop(0, '#000'); bg.addColorStop(.82, '#000'); bg.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+            ctx.globalCompositeOperation = 'source-over';
+
+            // Parkur (mor baskı) — masaüstünde sağ yarıda
+            if (!mobile) {
+                const course = [[.6, .74], [.68, .38], [.83, .58], [.9, .24]];
+                const P = course.map(([x, y]) => [x * W, y * H]);
+                const prog = reduceMotion ? 1 : Math.max(0, Math.min(1, (t - 800) / 2400));
+                const u = Math.min(W, H), rad = [u * .03, u * .022, u * .022, u * .026];
+                ctx.strokeStyle = accent; ctx.fillStyle = accent; ctx.lineWidth = 2;
+                ctx.globalAlpha = Math.min(1, prog * 4);
+                const s = rad[0];
+                ctx.beginPath();
+                ctx.moveTo(P[0][0], P[0][1] - s); ctx.lineTo(P[0][0] + s * .87, P[0][1] + s * .5); ctx.lineTo(P[0][0] - s * .87, P[0][1] + s * .5); ctx.closePath(); ctx.stroke();
+                const legs = P.length - 1;
+                for (let l = 0; l < legs; l++) {
+                    const lp = Math.max(0, Math.min(1, prog * legs - l));
+                    if (lp <= 0) break;
+                    const [x1, y1] = P[l], [x2, y2] = P[l + 1], dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy);
+                    const ux = dx / len, uy = dy / len, from = rad[l] + 3, to = len - rad[l + 1] - 3;
+                    ctx.beginPath();
+                    ctx.moveTo(x1 + ux * from, y1 + uy * from);
+                    ctx.lineTo(x1 + ux * (from + (to - from) * lp), y1 + uy * (from + (to - from) * lp));
+                    ctx.stroke();
+                    if (lp === 1) {
+                        ctx.beginPath(); ctx.arc(x2, y2, rad[l + 1], 0, Math.PI * 2); ctx.stroke();
+                        if (l + 1 === legs) { ctx.beginPath(); ctx.arc(x2, y2, rad[l + 1] * .62, 0, Math.PI * 2); ctx.stroke(); }
+                        else { ctx.font = `500 13px ${css('--mono')}`; ctx.fillText(String(l + 1), x2 + rad[l + 1] + 5, y2 - rad[l + 1]); }
+                    }
+                }
+                ctx.globalAlpha = 1;
+            }
+            if (!reduceMotion && visible) { running = true; requestAnimationFrame(draw); }
+        }
+        const kick = () => { if (!running) { running = true; requestAnimationFrame(draw); } };
+
+        home.addEventListener('pointermove', e => { const r = cv.getBoundingClientRect(); m.tx = (e.clientX - r.left) / S; m.ty = (e.clientY - r.top) / S; m.ta = 1; });
+        home.addEventListener('pointerleave', () => { m.ta = 0; });
+        new IntersectionObserver(es => { visible = es[0].isIntersecting; if (visible) kick(); }).observe(home);
+        let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { build(); kick(); }, 120); });
+        document.getElementById('themeBtn').addEventListener('click', () => setTimeout(kick, 0));
+        build(); kick();
+    })();
+
+    /* ---------- Experience: course line draws as you scroll ---------- */
+    (function courseLine() {
+        const course = document.getElementById('course'), bar = document.getElementById('courseProgress');
+        const legs = [...course.querySelectorAll('.leg')];
+        function update() {
+            const r = course.getBoundingClientRect(), top = 20, total = r.height - 40;
+            const reach = Math.max(0, Math.min(total, innerHeight * .6 - r.top - top));
+            bar.style.height = reach + 'px';
+            legs.forEach(l => {
+                const mk = l.querySelector('.marker').getBoundingClientRect();
+                l.classList.toggle('done', mk.top + mk.height / 2 - r.top - top <= reach + 1);
+            });
+        }
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
     })();
 
     /* ---------- Theme ---------- */
