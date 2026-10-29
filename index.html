@@ -4,7 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neslinur Kalkan — Engineering, Data & the Outdoors</title>
-    <meta name="description" content="Neslinur Kalkan — Electronics & Communication and Mathematical Engineering at İTÜ. Data, machine learning and orienteering.">
+    <meta name="description" content="Neslinur Kalkan — engineering student at İTÜ, focused on data engineering and machine learning.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://neslinurkalkan.com/">
+    <meta property="og:title" content="Neslinur Kalkan — Data engineering &amp; machine learning">
+    <meta property="og:description" content="Engineering student at İTÜ, exchange at SKKU Seoul. Data pipelines, machine learning and orienteering.">
+    <meta property="og:image" content="https://neslinurkalkan.com/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#F3F1EA">
     <link rel="icon" href="favicon.svg">
 
@@ -204,6 +212,25 @@
         .exp-body li { color: var(--muted); padding-left: 20px; position: relative; margin-bottom: 8px; }
         .exp-body li::before { content: "→"; position: absolute; left: 0; color: var(--ink); font-size: 13px; top: 2px; }
 
+        /* EDUCATION */
+        .edu-row { display: grid; grid-template-columns: 280px 1fr; gap: 32px; padding: 32px 0; border-top: 1px solid var(--line); }
+        .edu-row:last-child { border-bottom: 1px solid var(--line); }
+        .edu-row h3 { font-size: 21px; font-weight: 400; letter-spacing: -.01em; margin-bottom: 6px; }
+        .edu-sub { color: var(--muted); margin-bottom: 14px; }
+
+        /* PROJECTS */
+        .proj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+        .proj { border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; background: var(--surface); display: flex; flex-direction: column; gap: 12px; transition: border-color .25s, transform .25s; }
+        .proj:hover { border-color: var(--ink); transform: translateY(-2px); }
+        .proj .top { display: flex; justify-content: space-between; align-items: center; }
+        .proj h3 { font-size: 19px; font-weight: 500; letter-spacing: -.01em; line-height: 1.3; }
+        .proj p { color: var(--muted); font-size: 15px; flex: 1; }
+        .status { font: 500 11px var(--mono); letter-spacing: .04em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; }
+        .status.wip { color: var(--accent); background: var(--accent-soft); }
+        .status.wip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 1.6s ease-in-out infinite; }
+        .status.done { color: var(--forest); background: color-mix(in srgb, var(--forest) 10%, transparent); }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
+
         /* CERTIFICATIONS */
         .cert-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
         .cert {
@@ -244,6 +271,7 @@
         .ach { padding: 20px 0; border-top: 1px solid var(--line); }
         .ach h4 { font-weight: 600; font-size: 16px; margin-bottom: 6px; }
         .ach p { color: var(--muted); font-size: 15px; }
+        .free-text { color: var(--muted); font-size: 15px; margin-bottom: 18px; }
         .hobbies { display: flex; flex-wrap: wrap; gap: 10px; }
         .hobbies .tag { font-size: 13px; padding: 8px 14px; }
 
@@ -297,7 +325,7 @@
         :root[data-theme="dark"] .invert { --bg: #0B0D0B; --surface: #141714; }
         .funnel { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
         .funnel-sticky { position: sticky; top: 120px; align-self: start; }
-        .funnel-sticky p { font-size: 22px; font-weight: 300; letter-spacing: -.01em; max-width: 360px; }
+        .funnel-sticky p { font-size: 22px; font-weight: 300; letter-spacing: -.01em; max-width: 380px; min-height: 2.6em; transition: opacity .2s ease; }
         .big-num { font-size: clamp(88px, 13vw, 168px); font-weight: 200; letter-spacing: -.06em; line-height: .95; margin: 18px 0 10px; font-variant-numeric: tabular-nums; }
         .big-num { white-space: nowrap; }
         .big-unit { color: var(--muted); font-size: .32em; letter-spacing: -.01em; margin-left: .2em; }
@@ -330,24 +358,32 @@
             .steps { padding: 24px 0 12vh; }
             .skills { grid-template-columns: 1fr; }
             .leg-body { grid-template-columns: 1fr; gap: 10px; }
+            .edu-row { grid-template-columns: 1fr; gap: 10px; }
             .map-legend { flex-direction: column; gap: 4px; }
             .two-col { grid-template-columns: 1fr; gap: 48px; }
             .contact-card { grid-template-columns: 1fr; padding: 32px 24px; }
         }
+        /* Menü 7 linke çıktığı için hamburger 1000px altında devreye giriyor */
+        @media (max-width: 1000px) {
+            .menu-btn { display: grid; }
+            .nav-links {
+                display: none; position: absolute; top: 68px; left: 0; right: 0;
+                flex-direction: column; gap: 0; padding: 8px 32px 16px;
+                background: var(--bg); border-bottom: 1px solid var(--line);
+            }
+            .nav-links.open { display: flex; }
+            .nav-links li { width: 100%; }
+            .nav-links li:last-child a { border-bottom: 0; }
+            .nav-links a { display: block; width: 100%; padding: 14px 4px; font-size: 16px; border-bottom: 1px solid var(--line); border-radius: 0; }
+            .nav-links a:hover { background: transparent; color: var(--accent); }
+        }
         @media (max-width: 760px) {
+            .nav-links { padding: 8px 16px 16px; }
             .container { padding: 0 16px; }
             .leg { grid-template-columns: 44px 1fr; gap: 14px; }
             .marker { width: 44px; }
             .marker b { left: 38px; }
             .course-track, .course-progress { left: 21px; }
-            .menu-btn { display: grid; }
-            .nav-links {
-                display: none; position: absolute; top: 68px; left: 0; right: 0;
-                flex-direction: column; gap: 0; padding: 8px 16px 16px;
-                background: var(--bg); border-bottom: 1px solid var(--line);
-            }
-            .nav-links.open { display: flex; }
-            .nav-links a { padding: 14px 4px; font-size: 16px; border-bottom: 1px solid var(--line); border-radius: 0; }
             .stats { grid-template-columns: 1fr; }
             .stat { border-right: 0; border-bottom: 1px solid var(--line); }
             .stat:last-child { border-bottom: 0; }
@@ -370,7 +406,9 @@
         </a>
         <ul class="nav-links" id="navLinks">
             <li><a href="#about">About</a></li>
+            <li><a href="#education">Education</a></li>
             <li><a href="#experience">Experience</a></li>
+            <li><a href="#projects">Projects</a></li>
             <li><a href="#certifications">Certifications</a></li>
             <li><a href="#sports">Sports</a></li>
             <li><a href="#contact">Contact</a></li>
@@ -391,12 +429,12 @@
     <section id="home">
         <canvas id="dots" aria-hidden="true"></canvas>
         <div class="container hero-content">
-            <div class="eyebrow fade">İTÜ · Electronics &amp; Communication + Mathematical Engineering</div>
+            <div class="eyebrow fade">Engineering student at İTÜ · Exchange at SKKU, Seoul</div>
             <h1>
                 <span class="reveal-line"><span>Neslinur</span></span>
                 <span class="reveal-line"><span>Kalkan<em>.</em></span></span>
             </h1>
-            <p class="lead fade d2">I build data pipelines and machine learning models. In my free time, I run, dive and explore nature.</p>
+            <p class="lead fade d2">Data engineering &amp; machine learning.</p>
             <div class="hero-ctas fade d3">
                 <a class="btn" href="mailto:neslinurkalkan24@gmail.com">Get in touch <span aria-hidden="true">→</span></a>
                 <a class="btn ghost" href="https://www.linkedin.com/in/neslinur-kalkan-562422218" target="_blank" rel="noopener">LinkedIn</a>
@@ -417,12 +455,8 @@
             </div>
             <div class="about">
                 <div class="rv">
-                    <p>I study Electronics and Communication Engineering and Mathematical Engineering (double major) at Istanbul Technical University. I have experience in data analysis, optimization and machine learning. I like using what I learn in class to solve real problems in industry. Sports and art help me think in a creative way.</p>
-                    <p class="muted">I am a national orienteering athlete, and I raced at the Junior World Championships (JWOC 2022) in Portugal. Orienteering taught me to plan carefully and make quick decisions, and I use the same skills in engineering. Right now I am focused on data engineering and machine learning.</p>
-                    <div class="highlight">
-                        <span class="dot"></span>
-                        <div><strong>Morehead-Cain Global Scholars Fellowship Finalist</strong><br><span class="mono">Leadership · academics · character · sport</span></div>
-                    </div>
+                    <p>I graduated in Electronics and Communication Engineering from Istanbul Technical University in July 2026, and I am finishing my second major in Mathematical Engineering. I have experience in data analysis, optimization and machine learning. I like using what I learn in class to solve real problems in industry. Sports and art help me think in a creative way.</p>
+                    <p class="muted">I am a national orienteering athlete, and I raced at the Junior World Championships (JWOC 2022) in Portugal. Orienteering taught me to plan carefully and make quick decisions, and I use the same skills in engineering. Right now I am focused on data engineering and machine learning. This semester I am an exchange student at Sungkyunkwan University (SKKU) in Seoul, where I take courses in Generative AI, Deep Learning and Python.</p>
                     <div class="stamp-wrap" id="stamp" title="Junior World Orienteering Championships 2022, Portugal">
                         <svg class="stamp" viewBox="0 0 120 120" aria-hidden="true">
                             <defs><path id="ring" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/></defs>
@@ -461,11 +495,49 @@
         </div>
     </section>
 
+    <!-- EDUCATION -->
+    <section id="education" class="block">
+        <div class="container">
+            <div class="sec-head rv">
+                <div class="eyebrow">02 — Education</div>
+                <h2>Two degrees,<br><em>three countries.</em></h2>
+            </div>
+            <div class="edu-row rv">
+                <div class="exp-meta"><div class="org">Istanbul Technical University (İTÜ)</div><span class="mono">B.Sc. · 2021 – 2026</span></div>
+                <div class="exp-body">
+                    <h3>Electronics &amp; Communication Engineering</h3>
+                    <p class="edu-sub">GPA 3.42 / 4.00 · Senior design: ensemble neural networks, 97.87% on CIFAR-10</p>
+                </div>
+            </div>
+            <div class="edu-row rv">
+                <div class="exp-meta"><div class="org">Istanbul Technical University (İTÜ)</div><span class="mono">B.Sc. Double major · 2023 – 2027</span></div>
+                <div class="exp-body">
+                    <h3>Mathematical Engineering</h3>
+                    <p class="edu-sub">GPA 3.47 / 4.00</p>
+                </div>
+            </div>
+            <div class="edu-row rv">
+                <div class="exp-meta"><div class="org">Politechnika Opolska</div><span class="mono">Opole, Poland · 2024</span></div>
+                <div class="exp-body">
+                    <h3>Erasmus</h3>
+                    <p class="edu-sub">GPA 4.5 / 5</p>
+                </div>
+            </div>
+            <div class="edu-row rv">
+                <div class="exp-meta"><div class="org">Sungkyunkwan University (SKKU)</div><span class="mono">Seoul · Aug 2026 – Jan 2027</span></div>
+                <div class="exp-body">
+                    <h3>Exchange semester <span class="status wip" style="vertical-align:middle;margin-left:8px">Present</span></h3>
+                    <p class="edu-sub">Courses: Generative AI, Deep Learning, Python</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- EXPERIENCE -->
     <section id="experience" class="block">
         <div class="container">
             <div class="sec-head rv">
-                <div class="eyebrow">02 — Experience</div>
+                <div class="eyebrow">03 — Experience</div>
                 <h2>The course<br><em>so far.</em></h2>
             </div>
 
@@ -559,11 +631,53 @@
         </div>
     </section>
 
+    <!-- PROJECTS -->
+    <section id="projects" class="block">
+        <div class="container">
+            <div class="sec-head rv">
+                <div class="eyebrow">04 — Projects</div>
+                <h2>Things I built<br><em>&amp; am building.</em></h2>
+            </div>
+            <div class="proj-grid">
+                <article class="proj rv">
+                    <div class="top"><span class="status wip">In progress</span><span class="mono">2026</span></div>
+                    <h3>RAG assistant in Python</h3>
+                    <p>A small retrieval-augmented generation (RAG) app that I am coding from scratch: loading documents, creating embeddings and answering questions with an LLM.</p>
+                    <div class="tags"><span class="tag">Python</span><span class="tag">LLM</span><span class="tag">Embeddings</span><span class="tag">GenAI</span></div>
+                </article>
+                <article class="proj rv">
+                    <div class="top"><span class="status wip">In progress</span><span class="mono">Team project</span></div>
+                    <h3>Ironman 70.3 race analysis</h3>
+                    <p>Data analysis of Ironman 70.3 race results with my team. Now cleaning up the code and the analysis.</p>
+                    <div class="tags"><span class="tag">Python</span><span class="tag">pandas</span><span class="tag">Data Analysis</span></div>
+                </article>
+                <article class="proj rv">
+                    <div class="top"><span class="status done">Done</span><span class="mono">TikTak · 2026</span></div>
+                    <h3>Vehicle image classification</h3>
+                    <p>A computer vision model that classifies car photos as interior or exterior, for the vehicle cleanliness check.</p>
+                    <div class="tags"><span class="tag">Python</span><span class="tag">Computer Vision</span><span class="tag">Deep Learning</span></div>
+                </article>
+                <article class="proj rv">
+                    <div class="top"><span class="status done">Done</span><span class="mono">İTÜ · Senior design</span></div>
+                    <h3>Ensemble neural networks for higher accuracy</h3>
+                    <p>A genetic algorithm picks the best group of models from 87 CNNs, and a ConvNeXt-Small meta-learner combines them. 97.87% accuracy on CIFAR-10.</p>
+                    <div class="tags"><span class="tag">CNN</span><span class="tag">Genetic Algorithm</span><span class="tag">Ensemble Learning</span></div>
+                </article>
+                <article class="proj rv">
+                    <div class="top"><span class="status done">Published</span><span class="mono">IGRS'25</span></div>
+                    <h3>Conference paper</h3>
+                    <p>My research paper was published at the IGRS'25 conference.</p>
+                    <div class="tags"><span class="tag">Research</span></div>
+                </article>
+            </div>
+        </div>
+    </section>
+
     <!-- CERTIFICATIONS -->
     <section id="certifications" class="block">
         <div class="container">
             <div class="sec-head rv">
-                <div class="eyebrow">03 — Certifications</div>
+                <div class="eyebrow">05 — Certifications</div>
                 <h2>Certifications<br><em>&amp; achievements.</em></h2>
             </div>
             <div class="cert-grid">
@@ -571,8 +685,7 @@
                 <div class="cert rv"><div class="top"><span class="org">TÜBİTAK · Arçelik · Baykar · Cezeri</span><span class="mono">2024</span></div><h3>Artificial Intelligence Expertise Program</h3><p>Training program on AI and how it is used in industry</p></div>
                 <div class="cert rv"><div class="top"><span class="org">Coursera</span><span class="mono">Nov 2025</span></div><h3>Supervised Machine Learning: Regression and Classification</h3><p>Linear and logistic regression, regularization, gradient descent</p></div>
                 <div class="cert rv"><div class="top"><span class="org">ROKETSAN</span><span class="mono">Program</span></div><h3>CAMPus Engineering Program</h3><p>Training camp for engineering students</p></div>
-                <div class="cert rv"><div class="top"><span class="org">MathWorks</span><span class="mono">Jan 2024</span></div><h3>Control Design Onramp with Simulink</h3><p>Designing and simulating control systems</p></div>
-                <div class="cert rv"><div class="top"><span class="org">MathWorks</span><span class="mono">Nov 2023</span></div><h3>Simulink Onramp</h3><p>Basics of model-based design</p></div>
+                <div class="cert rv"><div class="top"><span class="org">MathWorks</span><span class="mono">2023 – 2024</span></div><h3>Simulink &amp; Control Design Onramp</h3><p>Model-based design, and designing and simulating control systems</p></div>
                 <div class="cert rv"><div class="top"><span class="org">Turkish Orienteering Federation</span><span class="mono">Jun 2025</span></div><h3>Level 1 Orienteering Coach</h3><p>Certified to teach orienteering</p></div>
                 <div class="cert rv"><div class="top"><span class="org">Istanbul Orienteering Sports Club</span><span class="mono">2021 – Present</span></div><h3>Licensed Athlete</h3><p>Racing at national level</p></div>
                 <div class="cert rv"><div class="top"><span class="org">CMAS · 1★</span><span class="mono">Jun 2025</span></div><h3>One Star Scuba Diver</h3><p>International open-water diving certificate</p></div>
@@ -584,7 +697,7 @@
     <section id="sports" class="block invert">
         <div class="container">
             <div class="sec-head rv">
-                <div class="eyebrow">04 — Sports</div>
+                <div class="eyebrow">06 — Sports</div>
                 <h2>Every route is<br><em>a dataset.</em></h2>
             </div>
 
@@ -592,14 +705,14 @@
                 <div class="funnel-sticky">
                     <div class="eyebrow" id="bigLabel">Routes recorded</div>
                     <div class="big-num"><span id="bigNum">0</span><span class="big-unit" id="bigUnit"></span></div>
-                    <p>From my first training run to a world championship start.</p>
+                    <p id="bigCaption"></p>
                 </div>
                 <div class="steps" id="steps">
-                    <div class="step" data-key="routes" data-label="Routes recorded" data-unit=""><div><h4>Routes</h4><p>Activities with a GPS track, from Strava</p></div><span class="mono" id="sRoutes">—</span></div>
-                    <div class="step" data-key="km" data-label="Kilometres covered" data-unit=" km"><div><h4>Distance</h4><p>Running, hiking and orienteering</p></div><span class="mono" id="sKm">—</span></div>
-                    <div class="step" data-key="countries" data-val="21" data-label="Countries visited" data-unit=""><div><h4>Countries</h4><p>Travel, races and an exchange semester in Seoul</p></div><span class="mono">21</span></div>
-                    <div class="step" data-key="sports" data-val="5" data-label="Sports" data-unit="+"><div><h4>Sports</h4><p>Run · hike · orienteer · dive · lift</p></div><span class="mono">5+</span></div>
-                    <div class="step" data-key="jwoc" data-val="2022" data-label="World championships" data-unit=""><div><h4>JWOC</h4><p>Junior World Orienteering Championships, Portugal</p></div><span class="mono">2022</span></div>
+                    <div class="step" data-key="routes" data-label="Routes recorded" data-unit="" data-caption="Every run, hike and race I recorded with GPS."><div><h4>Routes</h4><p>Activities with a GPS track, from Strava</p></div><span class="mono" id="sRoutes">—</span></div>
+                    <div class="step" data-key="km" data-label="Kilometres covered" data-unit=" km" data-caption="All on foot: running, hiking and orienteering."><div><h4>Distance</h4><p>Running, hiking and orienteering</p></div><span class="mono" id="sKm">—</span></div>
+                    <div class="step" data-key="countries" data-val="21" data-label="Countries visited" data-unit="" data-caption="Including South Korea, Japan, Egypt, Kazakhstan, Kyrgyzstan, Poland and Portugal."><div><h4>Countries</h4><p>Travel, races and an exchange semester in Seoul</p></div><span class="mono">21</span></div>
+                    <div class="step" data-key="sports" data-val="5" data-label="Sports" data-unit="+" data-caption="Orienteering is my main sport. The rest keep me moving."><div><h4>Sports</h4><p>Run · hike · orienteer · dive · lift</p></div><span class="mono">5+</span></div>
+                    <div class="step" data-key="jwoc" data-val="2022" data-label="World championships" data-unit="" data-caption="I raced for Türkiye at the Junior World Orienteering Championships."><div><h4>JWOC</h4><p>Junior World Orienteering Championships, Portugal</p></div><span class="mono">2022</span></div>
                 </div>
             </div>
 
@@ -614,13 +727,13 @@
                     <div class="stagger rv-s">
                     <div class="ach"><h4>Orienteering</h4><p>Raced at JWOC 2022 in Portugal and became Turkish National Champion. Orienteering is running and map reading at the same time.</p></div>
                     <div class="ach"><h4>İTÜ Orienteering Team</h4><p>Team president (2022–2023) and audit board member (2024–2025). I led the team at national championships.</p></div>
-                    <div class="ach"><h4>Nature sports</h4><p>I love running, scuba diving, camping and spending time in nature.</p></div>
                     </div>
                 </div>
                 <div class="rv">
-                    <h3>Off the clock</h3>
+                    <h3>In my free time</h3>
+                    <p class="free-text">I love running, scuba diving, camping and spending time in nature.</p>
                     <div class="hobbies">
-                        <span class="tag">Guitar &amp; ukulele</span><span class="tag">Painting</span><span class="tag">Photography</span><span class="tag">Camping &amp; outdoors</span><span class="tag">Travel · 21 countries</span>
+                        <span class="tag">Running</span><span class="tag">Scuba diving</span><span class="tag">Camping</span><span class="tag">Guitar &amp; ukulele</span><span class="tag">Painting</span><span class="tag">Photography</span><span class="tag">Travel · 21 countries</span>
                     </div>
                 </div>
             </div>
@@ -632,7 +745,7 @@
         <div class="container">
             <div class="contact-card rv">
                 <div>
-                    <div class="eyebrow" style="margin-bottom:20px">05 — Contact</div>
+                    <div class="eyebrow" style="margin-bottom:20px">07 — Contact</div>
                     <h2>Have a problem worth solving?<br><em>Let's talk.</em></h2>
                 </div>
                 <div class="contact-list">
@@ -864,6 +977,11 @@
         const key = step.dataset.key;
         const val = step.dataset.val ? +step.dataset.val : values[key];
         bigLabel.textContent = step.dataset.label;
+        const cap = document.getElementById('bigCaption');
+        if (cap.textContent !== step.dataset.caption) {
+            cap.style.opacity = 0;
+            setTimeout(() => { cap.textContent = step.dataset.caption || ''; cap.style.opacity = 1; }, reduceMotion ? 0 : 200);
+        }
         bigUnit.textContent = step.dataset.unit;
         tweenTo(val, key === 'jwoc');
     }
