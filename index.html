@@ -207,6 +207,10 @@
 
         .map-wrap { margin-top: 16px; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; position: relative; background: var(--surface); }
         #map { height: 520px; width: 100%; background: var(--surface); }
+        .leaflet-container img { max-width: none !important; }
+        /* OSM karolarını sitenin krem/koyu tonuna boya */
+        .map-tiles { filter: grayscale(1) sepia(.28) brightness(1.04) contrast(.88); }
+        :root[data-theme="dark"] .map-tiles { filter: grayscale(1) invert(1) sepia(.18) brightness(.82) contrast(.92); }
         .map-label { position: absolute; z-index: 500; right: 16px; top: 16px; padding: 6px 10px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); }
         .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--surface); color: var(--ink); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.12); }
         .leaflet-popup-content { font-family: var(--sans); font-size: 14px; margin: 14px 16px; }
@@ -660,9 +664,7 @@
 
     /* ---------- Theme ---------- */
     let tiles;
-    const tileUrl = () => root.getAttribute('data-theme') === 'dark'
-        ? 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
-        : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+    const tileUrl = () => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
     document.getElementById('themeBtn').addEventListener('click', () => {
         const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
@@ -726,7 +728,7 @@
     const routes = [];
     const map = L.map('map', { scrollWheelZoom: false, zoomControl: true }).setView([41.0082, 28.9784], 10);
     tiles = L.tileLayer(tileUrl(), {
-        attribution: 'Tiles © Esri — Esri, HERE, Garmin, © OpenStreetMap contributors', maxZoom: 16
+        attribution: '© OpenStreetMap contributors', maxZoom: 19, className: 'map-tiles'
     }).addTo(map);
     map.on('click', () => map.scrollWheelZoom.enable());
 

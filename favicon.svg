@@ -1,10 +1,9 @@
-<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="256" cy="256" r="256" fill="#0d2435"/>
-  
-  <text x="50%" y="50%" text-anchor="middle" dy=".32em" 
-        fill="#f5f5dc" 
-        font-family="Georgia, 'Times New Roman', serif" 
-        font-weight="bold" 
-        font-style="italic"
-        font-size="260">NK</text>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect x="16" y="16" width="480" height="480" rx="108" fill="#170F10"/>
+  <g fill="none" stroke="#F7EEE8" stroke-width="36" stroke-linejoin="miter" stroke-linecap="butt">
+    <path d="M96 364 V148 L212 364 V148"/>
+    <path d="M280 148 V364"/>
+    <path d="M378 148 L288 258 L382 364"/>
+  </g>
+  <circle cx="430" cy="344" r="22" fill="#E0461C"/>
 </svg>
