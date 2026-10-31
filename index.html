@@ -457,7 +457,7 @@
             </div>
             <div class="about">
                 <div class="rv">
-                    <p>I graduated in Electronics and Communication Engineering from Istanbul Technical University in July 2026, and I am finishing my second major in Mathematical Engineering. I have experience in data analysis, optimization and machine learning. I like using what I learn in class to solve real problems in industry. Sports and art help me think in a creative way.</p>
+                    <p>I graduated in Electronics and Communication Engineering from Istanbul Technical University in July 2026, and I am finishing my second major in Mathematical Engineering. I have 11 months of data experience at TikTak, a car-sharing company: building ETL pipelines on Amazon Redshift, maintaining production Airflow DAGs and delivering Tableau dashboards. I like using what I learn in class to solve real problems in industry. Sports and art help me think in a creative way.</p>
                     <p class="muted">I am a national orienteering athlete, and I raced at the Junior World Championships (JWOC 2022) in Portugal. Orienteering taught me to plan carefully and make quick decisions, and I use the same skills in engineering. Right now I am focused on data engineering and machine learning. This semester I am an exchange student at Sungkyunkwan University (SKKU) in Seoul, where I take courses in Generative AI, Deep Learning and Python.</p>
                     <div class="stamp-wrap" id="stamp" title="Junior World Orienteering Championships 2022, Portugal">
                         <svg class="stamp" viewBox="0 0 120 120" aria-hidden="true">
@@ -481,12 +481,12 @@
                 <div class="skill rv">
                     <div class="eyebrow">A · Programming</div>
                     <h3>Languages &amp; analysis</h3>
-                    <div class="tags"><span class="tag">Python</span><span class="tag">pandas</span><span class="tag">NumPy</span><span class="tag">scikit-learn</span><span class="tag">SQL</span><span class="tag">C/C++</span><span class="tag">MATLAB/Simulink</span></div>
+                    <div class="tags"><span class="tag">Python</span><span class="tag">pandas</span><span class="tag">NumPy</span><span class="tag">scikit-learn</span><span class="tag">SQL</span><span class="tag">C</span><span class="tag">Git</span></div>
                 </div>
                 <div class="skill rv">
                     <div class="eyebrow">B · Data &amp; ML</div>
                     <h3>Data engineering &amp; ML</h3>
-                    <div class="tags"><span class="tag">Amazon Redshift</span><span class="tag">PostgreSQL</span><span class="tag">Apache Airflow</span><span class="tag">ETL/ELT</span><span class="tag">Tableau</span><span class="tag">Machine Learning</span><span class="tag">Data Analysis</span></div>
+                    <div class="tags"><span class="tag">Amazon Redshift</span><span class="tag">PostgreSQL</span><span class="tag">Apache Airflow</span><span class="tag">ETL/ELT</span><span class="tag">Tableau</span><span class="tag">GitHub Actions</span><span class="tag">TensorFlow/Keras</span><span class="tag">Machine Learning</span></div>
                 </div>
                 <div class="skill rv">
                     <div class="eyebrow">C · Web</div>
@@ -559,9 +559,7 @@
                         <div class="exp-body">
                             <h3>Engineer Intern</h3>
                             <ul>
-                                <li>Set up input/output functions on microcontrollers using C++</li>
-                                <li>Built accurate timing for UART communication</li>
-                                <li>Improved my skills in embedded programming and reading data from devices</li>
+                                <li>Developed embedded communication routines in C on STM32 microcontrollers (interrupt- and UART-based communication)</li>
                             </ul>
                         </div>
                     </div>
@@ -574,9 +572,8 @@
                         <div class="exp-body">
                             <h3>Laboratory Intern</h3>
                             <ul>
-                                <li>Did research on train driving systems, vehicle positioning and better GPS accuracy</li>
-                                <li>Worked on a project to improve rail transportation technology</li>
-                                <li>Used localization and navigation methods to make the system more efficient</li>
+                                <li>Researched GNSS/IMU-based multi-sensor localization methods to improve positioning accuracy in railway systems</li>
+                                <li>Co-authored an extended abstract published at IGRS'25: "Railway Positioning and Fiber Optic Sensor Fusion"</li>
                             </ul>
                         </div>
                     </div>
@@ -589,9 +586,7 @@
                         <div class="exp-body">
                             <h3>Engineer Intern</h3>
                             <ul>
-                                <li>Helped design and analyze guidance systems</li>
-                                <li>Modeled and simulated guidance algorithms in MATLAB/Simulink</li>
-                                <li>Learned how guidance, control and navigation systems work together</li>
+                                <li>Researched guidance, navigation and control (GNC) system fundamentals and international guidance methodologies</li>
                             </ul>
                         </div>
                     </div>
@@ -605,17 +600,16 @@
                             <div class="role">
                                 <h3>Data Science Intern</h3><span class="mono role-date">Sep 2025 – Mar 2026</span>
                                 <ul>
-                                    <li>Analyzed car-rental data with Python and grouped customers with RFM segmentation</li>
-                                    <li>Wrote SQL queries on large datasets in Amazon Redshift</li>
-                                    <li>Found useful insights for the operations team, like high-revenue routes and better pricing</li>
+                                    <li>Segmented 2M+ customers into 4 groups using RFM features and K-means clustering (Redshift SQL + Python), finding one-time renters as a key group for retention</li>
+                                    <li>Hand-labeled image datasets and built TensorFlow/Keras vision models: an interior/exterior classifier (~98% accuracy, 9K images) and a cleanliness classifier (92% accuracy, ~10K images), reducing manual inspection</li>
                                 </ul>
                             </div>
                             <div class="role">
                                 <h3>Data Engineer Intern</h3><span class="mono role-date">Mar 2026 – Aug 2026</span>
                                 <ul>
-                                    <li>Built and maintained SQL-based ETL/ELT pipelines on Amazon Redshift</li>
-                                    <li>Scheduled and monitored production data workflows with Apache Airflow</li>
-                                    <li>Built Tableau dashboards for the operations team</li>
+                                    <li>Built ETL pipelines (Airflow DAGs and Redshift tables) to process billion-row vehicle telematics data more efficiently</li>
+                                    <li>Monitored and maintained 20–25 production Airflow DAGs (5-minute to daily schedules) syncing PostgreSQL data into Amazon Redshift; fixed pipeline failures</li>
+                                    <li>Developed Tableau dashboards (daily rentals, rental volume by region, revenue) used by operations, growth, CX and marketing teams, reducing manual campaign reporting</li>
                                 </ul>
                             </div>
                         </div>
@@ -664,20 +658,20 @@
                 <article class="proj rv">
                     <div class="top"><span class="status done">Done</span><span class="mono">TikTak · 2026</span></div>
                     <h3>Vehicle image classification</h3>
-                    <p>A computer vision model that classifies car photos as interior or exterior, for the vehicle cleanliness check.</p>
-                    <div class="tags"><span class="tag">Python</span><span class="tag">Computer Vision</span><span class="tag">Deep Learning</span></div>
+                    <p>Two vision models for the vehicle cleanliness check, trained on hand-labeled data: interior/exterior (~98% accuracy, 9K images) and clean/dirty (92% accuracy, ~10K images).</p>
+                    <div class="tags"><span class="tag">Python</span><span class="tag">TensorFlow/Keras</span><span class="tag">Computer Vision</span></div>
                 </article>
                 <article class="proj rv">
                     <div class="top"><span class="status done">Done</span><span class="mono">İTÜ · Senior design</span></div>
                     <h3>Ensemble neural networks for higher accuracy</h3>
-                    <p>A genetic algorithm picks the best group of models from 87 CNNs, and a ConvNeXt-Small meta-learner combines them. 97.87% accuracy on CIFAR-10.</p>
-                    <div class="tags"><span class="tag">CNN</span><span class="tag">Genetic Algorithm</span><span class="tag">Ensemble Learning</span></div>
+                    <p>Trained 300+ models (MLP, DenseNet, ResNeXt, WRN, EfficientNet) on MNIST and CIFAR-10. A genetic algorithm selects the best ensembles from ~20M combinations, and a confidence-based meta-learner sends uncertain samples to a ConvNeXt-Small specialist: 97.87% on CIFAR-10. Team of 3.</p>
+                    <div class="tags"><span class="tag">Deep Learning</span><span class="tag">Genetic Algorithm</span><span class="tag">Ensemble Learning</span></div>
                 </article>
                 <article class="proj rv">
-                    <div class="top"><span class="status done">Published</span><span class="mono">IGRS'25</span></div>
-                    <h3>Conference paper</h3>
-                    <p>My research paper was published at the IGRS'25 conference.</p>
-                    <div class="tags"><span class="tag">Research</span></div>
+                    <div class="top"><span class="status done">Published</span><span class="mono">IGRS'25 · May 2025</span></div>
+                    <h3>Railway Positioning and Fiber Optic Sensor Fusion</h3>
+                    <p>Extended abstract on multi-sensor localization for railway systems, from my research at the İTÜ Railway Systems Laboratory. IGRS'25 Book of Extended Abstracts, pp. 2507–2510.</p>
+                    <div class="tags"><span class="tag">Research</span><span class="tag">Sensor Fusion</span><span class="tag">GNSS/IMU</span></div>
                 </article>
             </div>
         </div>
