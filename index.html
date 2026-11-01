@@ -254,6 +254,16 @@
         .stat .val small { font-size: 40%; color: var(--muted); margin-left: 4px; letter-spacing: 0; }
 
         .map-wrap { margin-top: 16px; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; position: relative; background: var(--surface); }
+        .map-stats { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); border-bottom: 1px solid var(--line); }
+        .map-stats > div { padding: 16px 20px; border-right: 1px solid var(--line); min-width: 0; }
+        .map-stats > div:last-child { border-right: 0; }
+        .map-stats b { display: block; font-size: clamp(24px, 3vw, 34px); font-weight: 300; letter-spacing: -.03em; line-height: 1.1; }
+        .map-stats .mono { color: var(--muted); font-size: 12px; }
+        @media (max-width: 640px) {
+            .map-stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
+            .map-stats > div:nth-child(2) { border-right: 0; }
+            .map-stats > div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+        }
         #map { height: 520px; width: 100%; background: var(--surface); }
         .leaflet-container img { max-width: none !important; }
         /* OSM karolarını sitenin krem/koyu tonuna boya */
@@ -729,13 +739,20 @@
                     <div class="step" data-key="km" data-label="Kilometres covered" data-unit=" km" data-caption="All on foot: running, hiking and orienteering."><div><h4>Distance</h4><p>Running, hiking and orienteering</p></div><span class="mono" id="sKm">—</span></div>
                     <div class="step" data-key="countries" data-val="21" data-label="Countries visited" data-unit="" data-caption="Including South Korea, Japan, Egypt, Kazakhstan, Kyrgyzstan, Poland and Portugal."><div><h4>Countries</h4><p>Travel, races and an exchange semester in Seoul</p></div><span class="mono">21</span></div>
                     <div class="step" data-key="sports" data-val="5" data-label="Sports" data-unit="+" data-caption="Orienteering is my main sport. The rest keep me moving."><div><h4>Sports</h4><p>Run · hike · orienteer · dive · lift</p></div><span class="mono">5+</span></div>
-                    <div class="step" data-key="jwoc" data-val="2022" data-label="World championships" data-unit="" data-caption="I raced for Türkiye at the Junior World Orienteering Championships."><div><h4>JWOC</h4><p>Junior World Orienteering Championships, Portugal</p></div><span class="mono">2022</span></div>
                 </div>
             </div>
 
             <div class="map-wrap rv">
-                <div class="map-label mono" id="mapLabel">Loading routes…</div>
-                <div id="map" aria-label="Map of recorded activity routes"></div>
+                <div class="map-stats">
+                    <div><b id="msKm">—</b><span class="mono">km on foot</span></div>
+                    <div><b id="msRoutes">—</b><span class="mono">GPS routes</span></div>
+                    <div><b>21</b><span class="mono">countries</span></div>
+                    <div><b>5+</b><span class="mono">sports</span></div>
+                </div>
+                <div style="position:relative">
+                    <div class="map-label mono" id="mapLabel">Loading routes…</div>
+                    <div id="map" aria-label="Map of recorded activity routes"></div>
+                </div>
             </div>
 
             <div class="two-col">
@@ -1053,6 +1070,8 @@
             values.km = Math.floor(dist / 1000);
             document.getElementById('sRoutes').textContent = values.routes.toLocaleString('en-US');
             document.getElementById('sKm').textContent = values.km.toLocaleString('en-US') + ' km';
+            document.getElementById('msRoutes').textContent = values.routes.toLocaleString('en-US');
+            document.getElementById('msKm').textContent = values.km.toLocaleString('en-US');
             if (activeStep && !activeStep.dataset.val) activate(activeStep);
             label.textContent = `${acts.length} routes · click map to zoom`;
         } catch (e) {
